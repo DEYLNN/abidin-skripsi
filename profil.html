@@ -110,8 +110,14 @@
         align-items: center;
         padding: 2rem;
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        max-width: 700px;
+        margin: 2rem auto;
+        text-align: center;
+        /* Center horizontally on desktop */
+        /* Removed position relative and transform for better centering */
+        min-width: 300px;
       }
       .profil-img {
         width: 150px;
@@ -119,6 +125,7 @@
         border-radius: 50%;
         object-fit: cover;
         margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       }
       footer {
         background-color: var(--primary);
@@ -129,12 +136,35 @@
       }
 
       @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          padding: 1rem;
+        }
+
+        nav ul {
+          margin-top: 1rem;
+        }
+
         .materi-title h1 {
           font-size: 2rem;
         }
 
         .action-buttons {
           flex-direction: column;
+        }
+
+        /* Responsive profile container */
+        .profil-container {
+          padding: 1rem;
+          max-width: 90%;
+          margin: 1rem auto;
+        }
+
+        .profil-img {
+          width: 100px;
+          height: 100px;
+          margin-bottom: 0.5rem;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
         }
       }
     </style>
