@@ -1,5 +1,18 @@
 {
-  "rewrites": [{ "source": "/", "destination": "/beranda.html" }],
+  "version": 2,
+  "public": true,
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [{ "source": "/", "destination": "/public/beranda.html" }],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ]
 }
