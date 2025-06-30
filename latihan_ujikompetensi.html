@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Copy sama persis dari file utama -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri&display=swap"
+      rel="stylesheet"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Tajwid- Media Pembelajaran Ilmu Tajwid</title>
+    <style>
+      footer {
+        text-align: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #f8f9fa;
+        padding: 15px 0;
+        border-top: 1px solid #dee2e6;
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .hukum-item,
+      .hukum-item h3,
+      .hukum-item p,
+      .example-box,
+      .verse,
+      .translation {
+        font-family: "Amiri", serif;
+      }
+      .verse {
+        font-size: 1.2em;
+        direction: rtl;
+      }
+      :root {
+        --primary: #2e7d32;
+        --secondary: #f9f9f9;
+        --accent: #fbc02d;
+        --text: #333;
+        --light: #fff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--secondary);
+        color: var(--text);
+      }
+
+      header {
+        background-color: var(--primary);
+        color: var(--light);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo img {
+        height: 40px;
+        margin-right: 10px;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+      }
+
+      nav ul li {
+        margin-left: 20px;
+      }
+
+      nav ul li a {
+        color: var(--light);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      nav ul li a:hover {
+        color: var(--accent);
+      }
+      footer {
+        background-color: var(--primary);
+        color: var(--light);
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+      .latihan-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+      }
+      .latihan-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      footer {
+        background-color: var(--primary);
+        color: var(--light);
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .materi-title h1 {
+          font-size: 2rem;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lateef&display=swap"
+  />
+  <style>
+    /* Tambahkan style ini tanpa mengubah struktur HTML */
+    h1,
+    .arabic-text {
+      font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+      font-weight: 700;
+      font-size: 2em;
+    }
+    h2,
+    .arabic-text {
+      font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+      font-weight: 700;
+      font-size: 2em;
+    }
+    h4,
+    .arabic-text {
+      font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+      font-weight: 20;
+      font-size: 1em;
+    }
+    p,
+    .arabic-text {
+      font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+      font-weight: 20;
+      font-size: 1em;
+    }
+
+    /* Jika ingin menerapkan ke seluruh teks Arab di situs */
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* Untuk elemen spesifik berbahasa Arab */
+    .logo h1 {
+      font-family: "Amiri", serif;
+      line-height: 1.4;
+    }
+    body {
+      margin-bottom: 80px;
+    }
+  </style>
+  <body>
+    <!-- Copy header (sama seperti materi.html) -->
+    <header>
+      <div class="logo">
+        <img src="gambar/tazakka.png" alt="TajwidMaster Logo" />
+        <h1>علم التجويد</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="beranda.html">Beranda</a></li>
+          <li><a href="materi.html">Materi</a></li>
+          <li><a href="latihan.html">Latihan</a></li>
+          <li><a href="profil.html">Profil</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="container">
+      <h2>Latihan_ujikompetensi</h2>
+      <ol class="latihan-soal-list">
+        <li>
+          Bacalah ayat berikut dan tentukan hukum tajwid yang terdapat di
+          dalamnya!
+          <br />
+          <span class="verse arabic-text"
+            >مِنَ ٱلۡمُؤۡمِنِينَ رِجَالٞ صَدَقُواْ مَا عَٰهَدُواْ ٱللَّهَ
+            عَلَيۡهِمۡ</span
+          >
+        </li>
+        <li>
+          Jelaskan hukum nun sukun pada ayat berikut!
+          <br />
+          <span class="verse arabic-text"
+            >وَمِنَ ٱلۡمُؤۡمِنَٰتِ ٱلصَّٰبِرَٰتِ</span
+          >
+        </li>
+        <li>
+          Identifikasi hukum idgham pada ayat berikut!
+          <br />
+          <span class="verse arabic-text"
+            >يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ</span
+          >
+        </li>
+        <li>
+          Sebutkan jenis qalqalah yang terdapat pada ayat berikut!
+          <br />
+          <span class="verse arabic-text">قَدۡ أَفۡلَحَ ٱلۡمُؤۡمِنُونَ</span>
+        </li>
+        <li>
+          Bacalah ayat berikut dan terapkan hukum ikhfa'!
+          <br />
+          <span class="verse arabic-text">مِنۡ خَلۡفِهِمۡ</span>
+        </li>
+      </ol>
+    </div>
+    <footer>
+      <p>&copy; 2025 SohibTajwid - Media Pembelajaran Ilmu Tajwid</p>
+    </footer>
+  </body>
+</html>

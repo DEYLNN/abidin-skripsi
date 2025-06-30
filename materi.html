@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Copy sama persis dari file utama -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Materi Tajwid - TajwidMaster</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Copy semua CSS dari file utama */
+      /* Tambahkan ini di bagian bawah :root */
+      :root {
+        --primary: #2e7d32;
+        --secondary: #f9f9f9;
+        --accent: #fbc02d;
+        --text: #333;
+        --light: #fff;
+        --dark: #1b5e20; /* TAMBAHKAN INI */
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Opsional: untuk konsistensi */
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", "Segoe UI", sans-serif;
+      }
+
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 20px;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .page-header h2 {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      .page-header h2::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--accent);
+        border-radius: 2px;
+      }
+
+      .page-header p {
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .materi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+        margin-bottom: 4rem;
+      }
+
+      .materi-card {
+        background: var(--light);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0, 1);
+        position: relative;
+      }
+
+      .materi-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .materi-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+      }
+
+      .card-header {
+        position: relative;
+        height: 180px;
+        overflow: hidden;
+      }
+
+      .card-header img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+      }
+
+      .materi-card:hover .card-header img {
+        transform: scale(1.05);
+      }
+
+      .card-level {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--accent);
+        color: var(--text);
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-body {
+        padding: 1.5rem;
+      }
+
+      .card-body h3 {
+        color: var(--primary);
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+      }
+
+      .card-body p {
+        color: #666;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1.5rem 1.5rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--primary), var(--dark));
+        color: var(--light);
+        padding: 10px 20px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+        font-family: "Poppins", sans-serif; /* Pastikan font konsisten */
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(46, 125, 50, 0.4);
+      }
+      .btn i {
+        font-size: 1em; /* Ukuran ikon sama dengan teks */
+        margin-right: 8px; /* Spasi antara ikon dan teks */
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        box-shadow: none;
+      }
+
+      .btn-outline:hover {
+        background: var(--primary);
+        color: var(--light);
+      }
+
+      .stats {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #777;
+        font-size: 0.9rem;
+      }
+
+      .search-filter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        background: var(--light);
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+      }
+
+      .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 12px 20px 12px 45px;
+        border: 2px solid #eee;
+        border-radius: 30px;
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+
+      .search-box input:focus {
+        border-color: var(--primary-light);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+      }
+
+      .search-box i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+      }
+
+      .filter select {
+        padding: 10px 15px;
+        border: 2px solid #eee;
+        border-radius: 5px;
+        background: var(--light);
+        cursor: pointer;
+      }
+
+      .filter select:focus {
+        outline: none;
+        border-color: var(--primary-light);
+      }
+
+      @media (max-width: 768px) {
+        .materi-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .search-filter {
+          flex-direction: column;
+          gap: 15px;
+          align-items: stretch;
+        }
+
+        .search-box {
+          max-width: 100%;
+        }
+      }
+
+      /* KODE SEBELUM DIRUBAH */
+
+      body {
+        background-color: var(--secondary);
+        color: var(--text);
+      }
+
+      header {
+        background-color: var(--primary);
+        color: var(--light);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo img {
+        height: 40px;
+        margin-right: 10px;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+      }
+
+      nav ul li {
+        margin-left: 20px;
+      }
+
+      nav ul li a {
+        color: var(--light);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      nav ul li a:hover {
+        color: var(--accent);
+      }
+      footer {
+        background-color: var(--primary);
+        color: var(--light);
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Copy semua bagian header dari file utama -->
+    <header>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lateef&display=swap"
+      />
+      <style>
+        /* Tambahkan style ini tanpa mengubah struktur HTML */
+        h1,
+        .arabic-text {
+          font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+          font-weight: 700;
+          font-size: 2em;
+        }
+        h2,
+        .arabic-text {
+          font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+          font-weight: 700;
+          font-size: 2em;
+        }
+        h3,
+        .arabic-text {
+          font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+          font-weight: 700;
+          font-size: 2em;
+        }
+        p,
+        .arabic-text {
+          font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+          font-weight: 200;
+          font-size: 1, 5em;
+        }
+
+        /* Jika ingin menerapkan ke seluruh teks Arab di situs */
+        body {
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Untuk elemen spesifik berbahasa Arab */
+        .logo h1 {
+          font-family: "Amiri", serif;
+          line-height: 1.4;
+        }
+      </style>
+      <div class="logo">
+        <img src="gambar/tazakka.png" alt="TajwidMaster Logo" />
+        <h1>علم التجويد</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="beranda.html">Beranda</a></li>
+          <li><a href="materi.html">Materi</a></li>
+          <li><a href="latihan.html">Latihan</a></li>
+          <li><a href="profil.html">Profil</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="page-header">
+        <h2>وسآئل التّعليميّة في علم التجويد</h2>
+        <p>بمعهد تزكى للتربية الإسلامية الحديثة</p>
+      </div>
+      <div class="search-filter">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Cari materi..." />
+        </div>
+        <div class="filter">
+          <select>
+            <option>Semua Kategori</option>
+            <option>Nun Sukun & Tanwin</option>
+            <option>Mim Sukun & Tanwin</option>
+            <option>Lam Ta'rif</option>
+            <option>Qolqolah</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="materi-grid">
+        <!-- Materi 1 -->
+        <div class="materi-card" data-kategori="Nun Sukun & Tanwin">
+          <div class="card-header">
+            <img
+              src="gambar/Belajar-Membaca-Alquran_Fotor.jpg"
+              alt="Nun Sukun"
+            />
+            <span class="card-level">Pemula</span>
+          </div>
+          <div class="card-body">
+            <h3>النون الساكنة والتنوين</h3>
+            <p>
+              والمقصود بالنون الميتة هي النون الساكنة التي لا تصطف، فهي تستعمل
+              سكون الحركات، فلا يمكن أن تنطق النون إلا إذا سبقها حرف آخر. أما
+              التنوين فهو النون الميتة التي تقع في آخر النون الساكنة التي تظهر
+              عند قراءتها غسلاً (متصلة بكلمة أخرى) وتختفي عند كتابتها (ممثلة).
+            </p>
+          </div>
+          <div class="card-footer">
+            <a href="nun_sukun.html" class="btn">
+              <i class="fas fa-book-open"></i> Pelajari
+            </a>
+          </div>
+        </div>
+
+        <!-- Materi 2 -->
+        <div class="materi-card" data-kategori="Mim Sukun & Tanwin">
+          <div class="card-header">
+            <img src="gambar/quran-removebg-preview.png" alt="Mim Sukun" />
+            <span class="card-level">Menengah</span>
+          </div>
+          <div class="card-body">
+            <h3>الميم الساكنة والتنوين</h3>
+            <p>
+              ميم السكون من قوانين التجويد، وهو أحد قوانين التجويد التي توضح
+              أحكام القراءة عند وجود ميم السكون والتنوين مع حروف الهجاء.
+            </p>
+          </div>
+          <div class="card-footer">
+            <a href="mim_sukun.html" class="btn"
+              ><i class="fas fa-book-open"></i>Pelajari</a
+            >
+          </div>
+        </div>
+
+        <!-- Materi 3 -->
+        <div class="materi-card" data-kategori="Lam Ta'rif">
+          <div class="card-header">
+            <img src="gambar/ilustasi al quran.jpg" alt="Lam Ta'rif" />
+            <span class="card-level">Lanjutan</span>
+          </div>
+          <div class="card-body">
+            <h3>لام التعريف</h3>
+            <p>
+              لِلَّامِ أَلْ حَالَانِ قَبْلَ الْأَحْرُفِ أُوْلَاهُمَا
+              إِظْهَارُهَا فَلْتَعْرِفِ قَبْلَ ارْبَعٍ مَعْ عَشْرَةٍ خُذْ
+              عِلمَهُ مِنْ أَبْغِ حَجَّكَ وَ خَفْ عَقِيْمَهُ
+              ثَانِيْهِمَاإِدْغَامُهَا فِيْ أَرْبَعِ وَ عَشْرَةٍ أَيْضًا وَ
+              رَمْزَهَا فَع
+            </p>
+          </div>
+          <div class="card-footer">
+            <a href="lam_tarif.html" class="btn"
+              ><i class="fas fa-book-open"></i> Pelajari</a
+            >
+          </div>
+        </div>
+
+        <!-- Materi 4 -->
+        <div class="materi-card" data-kategori="Qolqolah">
+          <div class="card-header">
+            <img src="gambar/Al Quran tafsir.jpg" alt="Qalqalah" />
+            <span class="card-level">Dasar</span>
+          </div>
+          <div class="card-body">
+            <h3>القلقلة</h3>
+            <p>
+              وتعريف القلقلة في علم التجويد هو إظهار الذبذبات الصوتية عند تلاوة
+              الكلمات الواردة في حرف القلقلة، وهو ما كان لفظه غير منون أوموقوفاً
+            </p>
+          </div>
+          <div class="card-footer">
+            <a href="qalqalah.html" class="btn"
+              ><i class="fas fa-book-open"></i>Pelajari</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copy footer dari file utama -->
+    <footer>
+      <p>&copy; 2025 SohibTajwid - Media Pembelajaran Ilmu Tajwid</p>
+    </footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.querySelector(".search-box input");
+        const filterSelect = document.querySelector(".filter select");
+        const cards = document.querySelectorAll(".materi-card");
+
+        function filterMateri() {
+          const keyword = searchInput.value.trim().toLowerCase();
+          const kategori = filterSelect.value;
+
+          cards.forEach(function (card) {
+            const title = card
+              .querySelector(".card-body h3")
+              .innerText.toLowerCase();
+            const desc = card
+              .querySelector(".card-body p")
+              .innerText.toLowerCase();
+            const cardKategori = card
+              .getAttribute("data-kategori")
+              .toLowerCase();
+
+            // Cari juga di data-kategori selain judul & deskripsi
+            const matchKategori =
+              kategori === "Semua Kategori" ||
+              cardKategori === kategori.toLowerCase();
+            const matchKeyword =
+              title.includes(keyword) ||
+              desc.includes(keyword) ||
+              cardKategori.includes(keyword); // Tambahkan pencarian di kategori
+
+            // Tampilkan jika match kedua-duanya
+            if (matchKategori && matchKeyword) {
+              card.style.display = "";
+            } else {
+              card.style.display = "none";
+            }
+          });
+        }
+
+        searchInput.addEventListener("input", filterMateri);
+        filterSelect.addEventListener("change", filterMateri);
+      });
+    </script>
+  </body>
+</html>

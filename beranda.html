@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Tajwid- Belajar Ilmu Tajwid Interaktif</title>
+    <style>
+      :root {
+        --primary: #2e7d32;
+        --secondary: #f9f9f9;
+        --accent: #fbc02d;
+        --text: #333;
+        --light: #fff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      body {
+        background-color: var(--secondary);
+        color: var(--text);
+      }
+
+      header {
+        background-color: var(--primary);
+        color: var(--light);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo img {
+        height: 70px;
+        margin-right: 10px;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+      }
+
+      nav ul li {
+        margin-left: 20px;
+      }
+
+      nav ul li a {
+        color: var(--light);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      nav ul li a:hover {
+        color: var(--accent);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 20px;
+      }
+
+      .hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+          url("gambar/ornamen islami.jpg");
+        background-size: cover;
+        background-position: center;
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--light);
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+      }
+
+      .hero-content h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .modules {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 2rem;
+      }
+
+      .module-card {
+        background-color: var(--light);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+      }
+
+      .module-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .module-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+      }
+
+      .module-content {
+        padding: 1.5rem;
+      }
+
+      .module-content h3 {
+        color: var(--primary);
+        margin-bottom: 10px;
+      }
+
+      .module-content p {
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        display: inline-block;
+        background-color: var(--primary);
+        color: var(--light);
+        padding: 8px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #1b5e20;
+      }
+
+      .tajwid-demo {
+        background-color: var(--light);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .tajwid-demo h2 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .verse-container {
+        direction: rtl;
+        text-align: right;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+        padding: 1rem;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+      }
+
+      .highlight {
+        background-color: var(--accent);
+        padding: 0 3px;
+        border-radius: 3px;
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 1.5rem;
+      }
+
+      .control-btn {
+        background-color: var(--primary);
+        color: var(--light);
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s;
+      }
+
+      .control-btn:hover {
+        background-color: #1b5e20;
+      }
+
+      .explanation {
+        background-color: #f0f7f0;
+        padding: 1rem;
+        border-radius: 5px;
+        border-left: 4px solid var(--primary);
+      }
+
+      .explanation h3 {
+        color: var(--primary);
+        margin-bottom: 10px;
+      }
+
+      .practice-section {
+        background-color: var(--light);
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .practice-section h2 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .recording-container {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .recording-btn {
+        background-color: var(--primary);
+        color: var(--light);
+        border: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+        margin-bottom: 1rem;
+      }
+
+      .recording-btn:hover {
+        background-color: #1b5e20;
+      }
+
+      .recording-btn.recording {
+        background-color: #d32f2f;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .feedback {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: 5px;
+        background-color: #e8f5e9;
+        display: none;
+      }
+
+      footer {
+        background-color: var(--primary);
+        color: var(--light);
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          padding: 1rem;
+        }
+
+        nav ul {
+          margin-top: 1rem;
+        }
+
+        .hero {
+          height: 250px;
+        }
+
+        .hero-content h1 {
+          font-size: 2rem;
+        }
+
+        .modules {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lateef&display=swap"
+      />
+      <style>
+        /* Tambahkan style ini tanpa mengubah struktur HTML */
+        h1,
+        .arabic-text {
+          font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+          font-weight: 700;
+          font-size: 2em;
+        }
+        h2,
+        .arabic-text {
+          font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+          font-weight: 700;
+          font-size: 2em;
+        }
+        h3,
+        .arabic-text {
+          font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+          font-weight: 400;
+          font-size: 2em;
+        }
+        p,
+        .arabic-text {
+          font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+          font-weight: 20;
+          font-size: 1em;
+        }
+        span,
+        .arabic-text {
+          font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
+          font-weight: 500;
+          font-size: 1em;
+        }
+
+        /* Jika ingin menerapkan ke seluruh teks Arab di situs */
+        body {
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Untuk elemen spesifik berbahasa Arab */
+        .logo h1 {
+          font-family: "Amiri", serif;
+          line-height: 1.4;
+        }
+      </style>
+      <div class="logo">
+        <a href="beranda.html"></a>
+        <img src="gambar/tazakka.png" alt="TajwidMaster Logo" />
+        <h1>علم التجويد</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#">Beranda</a></li>
+          <li><a href="materi.html">Materi</a></li>
+          <li><a href="latihan.html">Latihan</a></li>
+          <li><a href="profil.html">Profil</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="container">
+      <section class="hero">
+        <div class="hero-content">
+          <h1>
+            Media Pembelajaran Ilmu Tajwid Berbasis Multimedia Kelas 2 KMI
+          </h1>
+          <p>بمعهد تزكى للتربية الإسلامية الحديثة</p>
+        </div>
+      </section>
+      <h2>التمهيد في التجويد</h2>
+      <div class="modules">
+        <div class="module-card">
+          <img src="gambar/Belajar-Membaca-Alquran_Fotor.jpg" alt="Nun Sukun" />
+          <div class="module-content">
+            <h3>النون الساكنة والتنوين</h3>
+            <p>
+              والمقصود بالنون الميتة هي النون الساكنة التي لا تصطف، فهي تستعمل
+              سكون الحركات، فلا يمكن أن تنطق النون إلا إذا سبقها حرف آخر. أما
+              التنوين فهو النون الميتة التي تقع في آخر النون الساكنة التي تظهر
+              عند قراءتها غسلاً (متصلة بكلمة أخرى) وتختفي عند كتابتها (ممثلة).
+            </p>
+            <!-- <a href="nun_sukun.html" class="btn">Pelajari</a> -->
+          </div>
+        </div>
+
+        <div class="module-card">
+          <img src="gambar/quran-removebg-preview.png" alt="Mim Sukun" />
+          <div class="module-content">
+            <h3>الميم الساكنة والتنوين</h3>
+            <p>
+              ميم السكون من قوانين التجويد، وهو أحد قوانين التجويد التي توضح
+              أحكام القراءة عند وجود ميم السكون والتنوين مع حروف الهجاء.
+            </p>
+            <!-- <a href="mim_sukun.html" class="btn">Pelajari</a> -->
+          </div>
+        </div>
+
+        <div class="module-card">
+          <img src="gambar/ilustasi al quran.jpg" alt="Lam Ta'rif" />
+          <div class="module-content">
+            <h3>لام التعريف</h3>
+            <p>
+              لِلَّامِ أَلْ حَالَانِ قَبْلَ الْأَحْرُفِ أُوْلَاهُمَا
+              إِظْهَارُهَا فَلْتَعْرِفِ قَبْلَ ارْبَعٍ مَعْ عَشْرَةٍ خُذْ
+              عِلمَهُ مِنْ أَبْغِ حَجَّكَ وَ خَفْ عَقِيْمَهُ
+              ثَانِيْهِمَاإِدْغَامُهَا فِيْ أَرْبَعِ وَ عَشْرَةٍ أَيْضًا وَ
+              رَمْزَهَا فَع
+            </p>
+            <!-- <a href="lam_tarif.html" class="btn">Pelajari</a> -->
+          </div>
+        </div>
+      </div>
+      <div class="module-card">
+        <img src="gambar/Al Quran tafsir.jpg" alt="Qolqolah" />
+        <div class="module-content">
+          <h3>القلقلة</h3>
+          <p>
+            وتعريف القلقلة في علم التجويد هو إظهار الذبذبات الصوتية عند تلاوة
+            الكلمات الواردة في حرف القلقلة، وهو ما كان لفظه غير منون أوموقوفاً
+          </p>
+          <!-- <a href="qalqalah.html" class="btn">Pelajari</a> -->
+        </div>
+      </div>
+
+      <section class="tajwid-demo">
+        <h2>أمثلة توضيحية لقراءة التجويد</h2>
+
+        <div class="verse-container">
+          <span>بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</span>
+        </div>
+
+        <div class="controls">
+          <button class="control-btn" id="playBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"
+              />
+            </svg>
+            Dengarkan
+          </button>
+          <button class="control-btn" id="highlightBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zM4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM10 8c-.552 0-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5S10.552 8 10 8z"
+              />
+            </svg>
+            Highlight Tajwid
+          </button>
+          <button class="control-btn" id="slowBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+              />
+              <path
+                d="M9 4a.5.5 0 0 0-1 0v3.5H6a.5.5 0 0 0 0 1h2.5V12a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H9V4z"
+              />
+            </svg>
+            Pelan
+          </button>
+        </div>
+
+        <div class="explanation">
+          <h3>Hukum Tajwid dalam Ayat Ini</h3>
+          <p id="tajwidExplanation">
+            Klik "Highlight Tajwid" untuk melihat penjelasan hukum tajwid pada
+            ayat di atas.
+          </p>
+        </div>
+      </section>
+
+      <section class="practice-section">
+        <h2>ممارسة القراءة الذاتية</h2>
+
+        <div class="recording-container">
+          <p>Bacalah ayat berikut dengan suara jelas:</p>
+          <div class="verse-container" style="margin-bottom: 1rem">
+            <span>قُلْ هُوَ ٱللَّٰهُ أَحَدٌ</span>
+          </div>
+
+          <button class="recording-btn" id="recordBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+              />
+              <path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+            </svg>
+            Mulai Rekam
+          </button>
+
+          <audio
+            id="playback"
+            controls
+            style="display: none; margin-top: 1rem; width: 100%"
+          ></audio>
+
+          <button class="btn" id="analyzeBtn" style="display: none">
+            Analisis Bacaan
+          </button>
+        </div>
+
+        <div class="feedback" id="feedback">
+          <h3>Hasil Analisis</h3>
+          <p id="feedbackText">
+            Bacaan Anda cukup baik. Perhatikan panjang pendek pada mad thobi'i.
+            Coba dengarkan contoh audio berikut:
+          </p>
+          <audio controls style="margin-top: 10px; width: 100%">
+            <source src="#" type="audio/mpeg" />
+            Browser Anda tidak mendukung elemen audio.
+          </audio>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 SohibTajwid - Media Pembelajaran Ilmu Tajwid</p>
+    </footer>
+
+    <script>
+      // Demo Audio
+      const basmalahAudio = new Audio(
+        "sound/Iframe Bismillah maqam Rost [MxD7SpNGmwQ].mp3"
+      );
+      const slowBasmalahAudio = new Audio(
+        "sound/Iframe Bismillah maqam Bayati [o1fQerFIbao].mp3"
+      );
+
+      // DOM Elements
+      const playBtn = document.getElementById("playBtn");
+      const highlightBtn = document.getElementById("highlightBtn");
+      const slowBtn = document.getElementById("slowBtn");
+      const recordBtn = document.getElementById("recordBtn");
+      const playback = document.getElementById("playback");
+      const verseContainer = document.querySelector(".verse-container");
+
+      // Play/Pause logic for normal and slow audio
+      let isPlayingNormal = false;
+      let isPlayingSlow = false;
+
+      function updatePlayBtn() {
+        playBtn.innerHTML = isPlayingNormal
+          ? `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <rect x="3" y="3" width="4" height="10" rx="1"/>
+          <rect x="9" y="3" width="4" height="10" rx="1"/>
+        </svg>
+        Pause
+      `
+          : `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+        </svg>
+        Dengarkan
+      `;
+      }
+
+      function updateSlowBtn() {
+        slowBtn.innerHTML = isPlayingSlow
+          ? `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <rect x="3" y="3" width="4" height="10" rx="1"/>
+          <rect x="9" y="3" width="4" height="10" rx="1"/>
+        </svg>
+        Pause
+      `
+          : `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="M9 4a.5.5 0 0 0-1 0v3.5H6a.5.5 0 0 0 0 1h2.5V12a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H9V4z"/>
+        </svg>
+        Pelan
+      `;
+      }
+
+      updatePlayBtn();
+      updateSlowBtn();
+
+      playBtn.addEventListener("click", () => {
+        if (!slowBasmalahAudio.paused) {
+          slowBasmalahAudio.pause();
+          isPlayingSlow = false;
+          updateSlowBtn();
+        }
+        if (basmalahAudio.paused) {
+          basmalahAudio.play();
+          isPlayingNormal = true;
+          updatePlayBtn();
+        } else {
+          basmalahAudio.pause();
+          isPlayingNormal = false;
+          updatePlayBtn();
+        }
+      });
+
+      basmalahAudio.addEventListener("ended", () => {
+        isPlayingNormal = false;
+        updatePlayBtn();
+      });
+
+      slowBtn.addEventListener("click", () => {
+        if (!basmalahAudio.paused) {
+          basmalahAudio.pause();
+          isPlayingNormal = false;
+          updatePlayBtn();
+        }
+        if (slowBasmalahAudio.paused) {
+          slowBasmalahAudio.currentTime = 0;
+          slowBasmalahAudio.play();
+          isPlayingSlow = true;
+          updateSlowBtn();
+        } else {
+          slowBasmalahAudio.pause();
+          isPlayingSlow = false;
+          updateSlowBtn();
+        }
+      });
+
+      slowBasmalahAudio.addEventListener("ended", () => {
+        isPlayingSlow = false;
+        updateSlowBtn();
+      });
+
+      // Highlight tajwid
+      highlightBtn.addEventListener("click", () => {
+        const highlighted = verseContainer.querySelectorAll(".highlight");
+        highlighted.forEach((el) => {
+          const text = el.textContent;
+          el.replaceWith(text);
+        });
+
+        const verseText = verseContainer.textContent;
+        const highlightedVerse = verseText
+          .replace(/ب/g, '<span class="highlight">ب</span>')
+          .replace(/ر/g, '<span class="highlight">ر</span>');
+
+        verseContainer.innerHTML = highlightedVerse;
+
+        const tajwidExplanation = document.getElementById("tajwidExplanation");
+        tajwidExplanation.innerHTML = `
+      <strong>Hukum Tajwid:</strong>
+      <ul>
+          <li>Huruf <span class="highlight">ب</span> (Ba): Hukum Isti'la - Tafkhim (tebal)</li>
+          <li>Huruf <span class="highlight">ر</span> (Ra): Hukum Tafkhim (tebal) karena berharakat fathah</li>
+      </ul>
+    `;
+      });
+
+      // --- Recording: ---
+      let mediaRecorder;
+      let audioChunks = [];
+      let userAudioUrl = null;
+
+      // Tempat hasil rekaman baru
+      let resultAudioElem = null;
+
+      // Reset hasil rekaman jika rekam ulang
+      function resetResultPlayer() {
+        if (resultAudioElem) {
+          resultAudioElem.remove();
+          resultAudioElem = null;
+        }
+        playback.style.display = "none";
+      }
+
+      recordBtn.addEventListener("click", async () => {
+        if (!mediaRecorder || mediaRecorder.state === "inactive") {
+          // Mulai Rekam
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+            });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = (e) => {
+              audioChunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = () => {
+              const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+              userAudioUrl = URL.createObjectURL(audioBlob);
+
+              // Reset hasil lama
+              resetResultPlayer();
+
+              // Tampilkan audio player browser
+              resultAudioElem = document.createElement("audio");
+              resultAudioElem.controls = true;
+              resultAudioElem.src = userAudioUrl;
+              resultAudioElem.style.display = "block";
+              resultAudioElem.style.width = "100%";
+              resultAudioElem.style.marginTop = "1rem";
+              recordBtn.parentNode.appendChild(resultAudioElem);
+            };
+
+            mediaRecorder.start();
+
+            recordBtn.classList.add("recording");
+            recordBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3z"/>
+          </svg>
+          Berhenti
+        `;
+
+            resetResultPlayer();
+          } catch (err) {
+            alert(
+              "Tidak dapat mengakses mikrofon. Pastikan Anda memberi izin."
+            );
+            recordBtn.classList.remove("recording");
+            recordBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+          </svg>
+          Mulai Rekam
+        `;
+          }
+        } else if (mediaRecorder && mediaRecorder.state === "recording") {
+          // Stop Rekam
+          mediaRecorder.stop();
+          recordBtn.classList.remove("recording");
+          recordBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+        </svg>
+        Mulai Rekam
+      `;
+        }
+      });
+    </script>
+  </body>
+</html>

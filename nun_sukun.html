@@ -1,0 +1,476 @@
+<html lang="en">
+  <head>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Tajwid- Media Pembelajaran Ilmu Tajwid</title>
+    <style>
+        .hukum-item, .hukum-item h3, .hukum-item p, .example-box, .verse, .translation {
+            font-family: 'Amiri', serif;}
+        .verse {
+            font-size: 1.2em;
+            direction: rtl;
+        }
+      :root {
+        --primary: #2e7d32;
+        --secondary: #f9f9f9;
+        --accent: #fbc02d;
+        --text: #333;
+        --light: #fff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--secondary);
+        color: var(--text);
+      }
+
+      header {
+        background-color: var(--primary);
+        color: var(--light);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo img {
+        height: 40px;
+        margin-right: 10px;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+      }
+
+      nav ul li {
+        margin-left: 20px;
+      }
+
+      nav ul li a {
+        color: var(--light);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      nav ul li a:hover {
+        color: var(--accent);
+      }
+      footer {
+        background-color: var(--primary);
+        color: var(--light);
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      /* TAMBAHAN BARU */
+      .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        /* Style khusus halaman materi detail */
+        .materi-detail {
+            background: var(--light);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+        
+        .materi-header {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+        
+        .materi-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .materi-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: var(--light);
+        }
+        
+        .materi-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        
+        .materi-title .meta {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .materi-body {
+            padding: 2rem;
+        }
+        
+        .section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent);
+            display: inline-block;
+        }
+        
+        .hukum-item {
+            background: rgba(129, 199, 132, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .hukum-item:hover {
+            transform: translateX(5px);
+            box-shadow: 5px 0 15px rgba(46, 125, 50, 0.1);
+        }
+        
+        .hukum-item h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .hukum-item h3 .badge {
+            background: var(--accent);
+            color: var(--text);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .example-box {
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            direction: rtl;
+        }
+        
+        .example-box .verse {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .example-box .translation {
+            font-style: italic;
+            color: #666;
+            text-align: center;
+            direction: ltr;
+        }
+        
+        .audio-player {
+            width: 100%;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .tips-box {
+            background: rgba(255, 213, 79, 0.2);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+        
+        .tips-box h4 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: var(--light);
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(46, 125, 50, 0.4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            box-shadow: none;
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--light);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 2rem;
+        }
+      footer {
+        background-color: var(--primary);
+        color: var(--light);
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+        
+        @media (max-width: 768px) {
+            .materi-title h1 {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+
+  </head>
+  <body>
+    <header>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lateef&display=swap">
+<style>
+  /* Tambahkan style ini tanpa mengubah struktur HTML */
+  h1, .arabic-text {
+    font-family: 'Amiri', serif; /* atau 'Lateef' untuk gaya kaligrafi */
+    font-weight: 700;
+    font-size: 2em;
+  }
+  h2, .arabic-text {
+    font-family: 'Amiri', serif; /* atau 'Lateef' untuk gaya kaligrafi */
+    font-weight: 700;
+    font-size: 2em;
+  }
+  h4, .arabic-text {
+    font-family: 'Amiri', serif; /* atau 'Lateef' untuk gaya kaligrafi */
+    font-weight: 20;
+    font-size: 1em;
+  }
+  p, .arabic-text {
+    font-family: 'Amiri', serif; /* atau 'Lateef' untuk gaya kaligrafi */
+    font-weight: 20;
+    font-size: 1em;
+  }
+  
+  /* Jika ingin menerapkan ke seluruh teks Arab di situs */
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  /* Untuk elemen spesifik berbahasa Arab */
+  .logo h1 {
+    font-family: 'Amiri', serif;
+    line-height: 1.4;
+  }
+</style>
+      <div class="logo">
+        <img src="gambar/tazakka.png" alt="TajwidLogo" />
+        <h1>علم التجويد</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="beranda.html">Beranda</a></li>
+          <li><a href="materi.html">Materi</a></li>
+          <li><a href="latihan.html">Latihan</a></li>
+          <li><a href="profil.html">Profil</a></li>
+        </ul>
+      </nav>
+    </header>
+  </body>
+</html>
+<body>
+    <div class="container">
+        <div class="materi-detail">
+            <div class="materi-header">
+                <img src="gambar/quran-removebg-preview.png" alt="Nun Sukun dan Tanwin">
+                <div class="materi-title">
+                    <h1>النون الساكنة والتنوين</h1>
+                    <div class="meta">
+                        <span class="meta-item"><i class="far fa-file-alt"></i>٥ أحكام</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="materi-body">
+                <div class="section">
+                    <h2>التعريف</h2>
+                    <p>النون الساكنة والتنوين علامتا ترقيم في القرآن الكريم لهما أحكام تجويدية خاصة. والتنوين هو حرف من حروف النون الساكنة التي ليس لها حرف، بينما التنوين هو علامة ترقيم تشير إلى وجود حرف من حروف النون الساكنة في ظروف معينة.</p>
+                </div>
+                
+                <div class="section">
+                    <h2>أحكام النون الساكنة والتوين</h2>
+                    <div class="hukum-item">
+                        <h3><span class="badge">القانون ١</span> الإظهار الحلق</h3>
+                        <p>
+الإظهار معناه: الوضوح وأماالإظهار في القراءة فهو: إخراج كل حرف من مخرج من غير غنة
+                            : </p>
+                        <p>ء ه ع ح غ خ </p>
+                        
+                        <div class="example-box">
+                            <div class="verse">مَنْ آمَنَ</div>
+                            <div class="translation">"Dari orang yang beriman" (QS. Al-Baqarah: 62)</div>
+                            <audio controls class="audio-player">
+                                <source src="sound/idzhar halqi.opus" type="audio/mpeg">
+                                Browser tidak mendukung audio
+                            </audio>
+                        </div>
+                        <div class="tips-box">
+                            <h4><i class="fas fa-lightbulb"></i>حروف الحلق</h4>
+                            <p>أ - ع - غ - ح - خ - ه</p>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="hukum-item">
+                        <h3><span class="badge">القانون٢</span> الإدغام مع الغنّة</h3>
+                        <p>الإدغام معناه: الإدخال واما الإدغام في القراءة فهو: خلط الحرفين وإدخال أحدهماالآخرفتدغم النون الساكنة أو التنوين بغنة عندما إتصل بأحدهمااحدأحرف</p>
+                        
+                        <div class="example-box">
+                            <div class="verse">مِنْ وَرَائِهِمْ</div>
+                            <div class="translation">"Dari belakang mereka" (QS. Yasin: 9)</div>
+                            <audio controls class="audio-player">
+                                <source src="sound/idham bigu.mp3" type="audio/mpeg">
+                                Browser tidak mendukung audio
+                            </audio>
+                        </div>
+                        <div class="tips-box">
+                            <h4><i class="fas fa-lightbulb"></i> حروف الإدغام مع الغنّة</h4>
+                            <p>ي - ن - م - و</p>
+                        </div>
+                    </div>
+
+                    <div class="hukum-item">
+                        <h3><span class="badge">القانون ٣</span> الإدغام بغيرالغنّة</h3>
+                        <p>وتدغم النون الساكنة أو التنوين بغير غنة عندما إتصلت باحدهما الإدغام معناه: الإدخال </p>
+                        
+                        <div class="example-box">
+                            <div class="verse">هُدًى لِّلْمُتَّقِيْنَ</div>
+                            <div class="translation">"petunjuk bagi orang-orang yang bertakwa," (QS. Al-Baqarah: 2)</div>
+                            <audio controls class="audio-player">
+                                <source src="sound/contoh01.opus" type="audio/mpeg">
+                                Browser tidak mendukung audio
+                            </audio>
+                        </div>
+                        <div class="tips-box">
+                            <h4><i class="fas fa-lightbulb"></i> حروف الإدغام بغيرالغنّة</h4>
+                            <p>ل - ر</p>
+                        </div>
+                    </div>
+                    
+                    <div class="hukum-item">
+                        <h3><span class="badge">القانون ٤</span> الإقلاب</h3>
+                        <p>الإقلاب معناه تحويل شيءٍ عن وجهه وأما الإقلاب في القراءة فهو جعل صوتٍ النون الساكنة أو التنوين ميماً وحروْف الإقلاب واحدٌهو  ب
+</p>
+                        
+                        <div class="example-box">
+                            <div class="verse">لَنَسْفَعًاۢ بِٱلنَّاصِيَةِ</div>
+                            <div class="translation">"Sungguh Kami akan menarik ubun-ubun" (QS. Al-Alaq: 15)</div>
+                            <audio controls class="audio-player">
+                                <source src="sound/iqlab.opus" type="audio/mpeg">
+                                Browser tidak mendukung audio
+                            </audio>
+                        </div>
+                        <div class="tips-box">
+                            <h4><i class="fas fa-lightbulb"></i> حروف الإقلاب</h4>
+                            <p>ب</p>
+                        </div>
+                    </div>
+                    
+                    <div class="hukum-item">
+                        <h3><span class="badge">القانون ٥</span> الإخفاء حقيقي</h3>
+                        <p>الإخفاء معناه الإخباء وأما الإخفاء في القراءه فهو عبارة عن النطق بحرف ساكن خال عن التشديد على صفة بين الإظهار والإدغام مع ثبوت الغنة في الحرف الأول والإخفاء هنا الإخفاء حقيقي </p>
+                        
+                        <div class="example-box">
+                            <div class="verse">أَنْصَارُ ٱللَّهِ</div>
+                            <div class="translation">"Penolong-penolong Allah" (QS. As-Saff: 14)</div>
+                            <audio controls class="audio-player">
+                                <source src="sound/ikhfa haqiqi.opus" type="audio/mpeg">
+                                Browser tidak mendukung audio
+                            </audio>
+                        </div>
+                        <div class="tips-box">
+                            <h4><i class="fas fa-lightbulb"></i> حروف الإخفاءحقيقي</h4>
+                            <p>ت ث ج د ذ ز س ش ص ض ط ظ ف ق ك</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>Latihan Praktis</h2>
+                    <p>Praktikkan bacaan berikut dengan memperhatikan hukum nun mati dan tanwin:</p>
+                    
+                    <div class="example-box">
+                        <div class="verse">إِنَّ ٱلْإِنْسَٰنَ لَفِى خُسْرٍ إِلَّا ٱلَّذِينَ ءَامَنُوا۟</div>
+                        <div class="translation">"Sesungguhnya manusia berada dalam kerugian, kecuali orang-orang yang beriman" (QS. Al-Asr: 2-3)</div>
+                        <audio controls class="audio-player">
+                            <source src="sound/contoh nun sukun.opus" type="audio/mpeg">
+                            Browser tidak mendukung audio
+                        </audio>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>                  
+    <footer>
+      <p>&copy; 2025 SohibTajwid - Media Pembelajaran Ilmu Tajwid</p>
+    </footer>
+</body>
+</html>
