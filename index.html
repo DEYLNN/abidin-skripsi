@@ -89,8 +89,16 @@
       }
 
       .hero-content h1 {
-        font-size: 2.5rem;
+        font-size: 2.3rem;
         margin-bottom: 1rem;
+        margin: 0 5px;
+      }
+
+      @media (max-width: 768px) {
+        .hero-content h1 {
+          font-size: 1.5rem;
+          margin: 0 10px;
+        }
       }
 
       .modules {
@@ -176,6 +184,16 @@
         background-color: var(--accent);
         padding: 0 3px;
         border-radius: 3px;
+        font-size: 2rem !important;
+        font-family: "Amiri", serif !important;
+        font-weight: normal !important;
+        font-style: normal !important;
+        line-height: 1.6 !important;
+        direction: rtl !important;
+        text-align: right !important;
+        letter-spacing: normal !important;
+        text-decoration: none !important;
+        color: #000 !important;
       }
 
       .controls {
@@ -343,7 +361,7 @@
         .arabic-text {
           font-family: "Amiri", serif; /* atau 'Lateef' untuk gaya kaligrafi */
           font-weight: 20;
-          font-size: 1em;
+          font-size: 2em;
         }
         span,
         .arabic-text {
@@ -375,6 +393,7 @@
           <li><a href="materi.html">Materi</a></li>
           <li><a href="latihan.html">Latihan</a></li>
           <li><a href="profil.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
         </ul>
       </nav>
     </header>
@@ -387,13 +406,23 @@
           <p>بمعهد تزكى للتربية الإسلامية الحديثة</p>
         </div>
       </section>
-      <h2>التمهيد في التجويد</h2>
+      <h2 style="text-align: right">التمهيد في التجويد</h2>
+      <div class="verse-container">
+        <small
+          ><span
+            >علم التجويد هوعلم لمعرفةالقواعدالثابتة في تحسين قراءة القرآن
+            الكريم.// فائدته:حفظ اللسان عن الخطاء في قراءة القرآن الكريم//حكم
+            إستعماله: واجب عند قراءة القرآن الكريم//حكم تعلمه و حفظه فرض
+            كفاية</span
+          ></small
+        >
+      </div>
       <div class="modules">
         <div class="module-card">
           <img src="gambar/Belajar-Membaca-Alquran_Fotor.jpg" alt="Nun Sukun" />
-          <div class="module-content">
+          <div style="text-align: right" class="module-content">
             <h3>النون الساكنة والتنوين</h3>
-            <p>
+            <p style="text-align: right; font-size: 1.1em">
               والمقصود بالنون الميتة هي النون الساكنة التي لا تصطف، فهي تستعمل
               سكون الحركات، فلا يمكن أن تنطق النون إلا إذا سبقها حرف آخر. أما
               التنوين فهو النون الميتة التي تقع في آخر النون الساكنة التي تظهر
@@ -405,9 +434,9 @@
 
         <div class="module-card">
           <img src="gambar/quran-removebg-preview.png" alt="Mim Sukun" />
-          <div class="module-content">
+          <div style="text-align: right" class="module-content">
             <h3>الميم الساكنة والتنوين</h3>
-            <p>
+            <p style="text-align: right; font-size: 1.1em">
               ميم السكون من قوانين التجويد، وهو أحد قوانين التجويد التي توضح
               أحكام القراءة عند وجود ميم السكون والتنوين مع حروف الهجاء.
             </p>
@@ -417,14 +446,13 @@
 
         <div class="module-card">
           <img src="gambar/ilustasi al quran.jpg" alt="Lam Ta'rif" />
-          <div class="module-content">
+          <div style="text-align: right" class="module-content">
             <h3>لام التعريف</h3>
-            <p>
-              لِلَّامِ أَلْ حَالَانِ قَبْلَ الْأَحْرُفِ أُوْلَاهُمَا
-              إِظْهَارُهَا فَلْتَعْرِفِ قَبْلَ ارْبَعٍ مَعْ عَشْرَةٍ خُذْ
-              عِلمَهُ مِنْ أَبْغِ حَجَّكَ وَ خَفْ عَقِيْمَهُ
-              ثَانِيْهِمَاإِدْغَامُهَا فِيْ أَرْبَعِ وَ عَشْرَةٍ أَيْضًا وَ
-              رَمْزَهَا فَع
+            <p style="text-align: right; font-size: 1.1em">
+              لام التعريف أو ال (التعريف) هي الألف واللام التي دخلت على الاسم
+              بحيث لو حذفت ماتغيرت الكلمة عن معناها الأصلى. للام التعريف بمناسبة
+              ما وقع بعدها من الأحرف الهجائية حكمان و هما : إظهار قمريةوإدغام
+              شمسية
             </p>
             <!-- <a href="lam_tarif.html" class="btn">Pelajari</a> -->
           </div>
@@ -432,16 +460,15 @@
       </div>
       <div class="module-card">
         <img src="gambar/Al Quran tafsir.jpg" alt="Qolqolah" />
-        <div class="module-content">
+        <div style="text-align: right" class="module-content">
           <h3>القلقلة</h3>
-          <p>
+          <p style="text-align: right; font-size: 1.2em">
             وتعريف القلقلة في علم التجويد هو إظهار الذبذبات الصوتية عند تلاوة
             الكلمات الواردة في حرف القلقلة، وهو ما كان لفظه غير منون أوموقوفاً
           </p>
           <!-- <a href="qalqalah.html" class="btn">Pelajari</a> -->
         </div>
       </div>
-
       <section class="tajwid-demo">
         <h2>أمثلة توضيحية لقراءة التجويد</h2>
 
@@ -557,7 +584,9 @@
     </div>
 
     <footer>
-      <p>&copy; 2025 SohibTajwid - Media Pembelajaran Ilmu Tajwid</p>
+      <p style="font-size: 1em">
+        &copy; 2025 SohibTajwid - Media Pembelajaran Ilmu Tajwid
+      </p>
     </footer>
 
     <script>
@@ -575,7 +604,9 @@
       const slowBtn = document.getElementById("slowBtn");
       const recordBtn = document.getElementById("recordBtn");
       const playback = document.getElementById("playback");
-      const verseContainer = document.querySelector(".verse-container");
+      const verseContainer = document.querySelector(
+        ".tajwid-demo .verse-container"
+      );
 
       // Play/Pause logic for normal and slow audio
       let isPlayingNormal = false;
@@ -664,29 +695,42 @@
         updateSlowBtn();
       });
 
-      // Highlight tajwid
+      // Highlight tajwid toggle
+      let isHighlighted = false;
+      const originalVerse = "بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+
       highlightBtn.addEventListener("click", () => {
-        const highlighted = verseContainer.querySelectorAll(".highlight");
-        highlighted.forEach((el) => {
-          const text = el.textContent;
-          el.replaceWith(text);
-        });
+        if (!isHighlighted) {
+          // Apply highlighting
+          const highlightedVerse = originalVerse
+            .replace(/ب/g, '<span class="highlight">ب</span>')
+            .replace(/ر/g, '<span class="highlight">ر</span>');
 
-        const verseText = verseContainer.textContent;
-        const highlightedVerse = verseText
-          .replace(/ب/g, '<span class="highlight">ب</span>')
-          .replace(/ر/g, '<span class="highlight">ر</span>');
+          verseContainer.innerHTML = `<span>${highlightedVerse}</span>`;
 
-        verseContainer.innerHTML = highlightedVerse;
+          const tajwidExplanation =
+            document.getElementById("tajwidExplanation");
+          tajwidExplanation.innerHTML = `
+        <strong>Hukum Tajwid:</strong>
+        <ul>
+            <li>Huruf <span class="highlight">ب</span> (Ba): Hukum Isti'la - Tafkhim (tebal)</li>
+            <li>Huruf <span class="highlight">ر</span> (Ra): Hukum Tafkhim (tebal) karena berharakat fathah</li>
+        </ul>
+      `;
 
-        const tajwidExplanation = document.getElementById("tajwidExplanation");
-        tajwidExplanation.innerHTML = `
-      <strong>Hukum Tajwid:</strong>
-      <ul>
-          <li>Huruf <span class="highlight">ب</span> (Ba): Hukum Isti'la - Tafkhim (tebal)</li>
-          <li>Huruf <span class="highlight">ر</span> (Ra): Hukum Tafkhim (tebal) karena berharakat fathah</li>
-      </ul>
-    `;
+          isHighlighted = true;
+        } else {
+          // Remove highlighting
+          verseContainer.innerHTML = `<span>${originalVerse}</span>`;
+
+          const tajwidExplanation =
+            document.getElementById("tajwidExplanation");
+          tajwidExplanation.innerHTML = `
+        Klik "Highlight Tajwid" untuk melihat penjelasan hukum tajwid pada ayat di atas.
+      `;
+
+          isHighlighted = false;
+        }
       });
 
       // --- Recording: ---

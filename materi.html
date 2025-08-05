@@ -9,6 +9,65 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <!-- Supabase CDN - Multiple sources for redundancy -->
+    <script>
+      // Try to load Supabase from CDN, fallback to offline version
+      function loadSupabase() {
+        return new Promise((resolve) => {
+          // Try unpkg first
+          const script1 = document.createElement("script");
+          script1.src = "https://unpkg.com/@supabase/supabase-js@2";
+          script1.onload = () => {
+            console.log("Supabase loaded from unpkg CDN");
+            resolve();
+          };
+          script1.onerror = () => {
+            console.log("unpkg failed, trying jsdelivr...");
+
+            // Try jsdelivr
+            const script2 = document.createElement("script");
+            script2.src =
+              "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+            script2.onload = () => {
+              console.log("Supabase loaded from jsdelivr CDN");
+              resolve();
+            };
+            script2.onerror = () => {
+              console.log("CDN failed, loading offline version...");
+
+              // Load offline version
+              const script3 = document.createElement("script");
+              script3.src = "supabase-offline.js";
+              script3.onload = () => {
+                console.log("Supabase loaded from offline version");
+                resolve();
+              };
+              script3.onerror = () => {
+                console.error("All Supabase sources failed");
+                resolve();
+              };
+              document.head.appendChild(script3);
+            };
+            document.head.appendChild(script2);
+          };
+          document.head.appendChild(script1);
+        });
+      }
+
+      // Load Supabase immediately
+      loadSupabase();
+    </script>
+
+    <!-- Dotenv CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/dotenv@16.0.3/lib/main.min.js"></script>
+
+    <!-- Environment Loader -->
+    <script src="env-loader.js"></script>
+
+    <!-- Environment Variables Fallback -->
+    <script src="env.js"></script>
+
     <style>
       /* Copy semua CSS dari file utama */
       /* Tambahkan ini di bagian bawah :root */
@@ -81,6 +140,21 @@
         box-shadow: var(--shadow);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0, 1);
         position: relative;
+      }
+
+      .materi-card.empty-state {
+        background: var(--light);
+        border: 2px dashed #ddd;
+        box-shadow: none;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .materi-card.empty-state:hover {
+        transform: none;
+        box-shadow: none;
       }
 
       .materi-card:hover {
@@ -401,6 +475,7 @@
           <li><a href="materi.html">Materi</a></li>
           <li><a href="latihan.html">Latihan</a></li>
           <li><a href="profil.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
         </ul>
       </nav>
     </header>
@@ -408,7 +483,7 @@
     <div class="container">
       <div class="page-header">
         <h2>وسآئل التّعليميّة في علم التجويد</h2>
-        <p>بمعهد تزكى للتربية الإسلامية الحديثة</p>
+        <p style="font-size: 1.5em">بمعهد تزكى للتربية الإسلامية الحديثة</p>
       </div>
       <div class="search-filter">
         <div class="search-box">
@@ -416,104 +491,15 @@
           <input type="text" placeholder="Cari materi..." />
         </div>
         <div class="filter">
-          <select>
-            <option>Semua Kategori</option>
-            <option>Nun Sukun & Tanwin</option>
-            <option>Mim Sukun & Tanwin</option>
-            <option>Lam Ta'rif</option>
-            <option>Qolqolah</option>
+          <select id="judul-latin-filter">
+            <option value="">Semua Judul</option>
+            <!-- Options akan diisi secara dinamis dari database -->
           </select>
         </div>
       </div>
 
       <div class="materi-grid">
-        <!-- Materi 1 -->
-        <div class="materi-card" data-kategori="Nun Sukun & Tanwin">
-          <div class="card-header">
-            <img
-              src="gambar/Belajar-Membaca-Alquran_Fotor.jpg"
-              alt="Nun Sukun"
-            />
-            <span class="card-level">Pemula</span>
-          </div>
-          <div class="card-body">
-            <h3>النون الساكنة والتنوين</h3>
-            <p>
-              والمقصود بالنون الميتة هي النون الساكنة التي لا تصطف، فهي تستعمل
-              سكون الحركات، فلا يمكن أن تنطق النون إلا إذا سبقها حرف آخر. أما
-              التنوين فهو النون الميتة التي تقع في آخر النون الساكنة التي تظهر
-              عند قراءتها غسلاً (متصلة بكلمة أخرى) وتختفي عند كتابتها (ممثلة).
-            </p>
-          </div>
-          <div class="card-footer">
-            <a href="nun_sukun.html" class="btn">
-              <i class="fas fa-book-open"></i> Pelajari
-            </a>
-          </div>
-        </div>
-
-        <!-- Materi 2 -->
-        <div class="materi-card" data-kategori="Mim Sukun & Tanwin">
-          <div class="card-header">
-            <img src="gambar/quran-removebg-preview.png" alt="Mim Sukun" />
-            <span class="card-level">Menengah</span>
-          </div>
-          <div class="card-body">
-            <h3>الميم الساكنة والتنوين</h3>
-            <p>
-              ميم السكون من قوانين التجويد، وهو أحد قوانين التجويد التي توضح
-              أحكام القراءة عند وجود ميم السكون والتنوين مع حروف الهجاء.
-            </p>
-          </div>
-          <div class="card-footer">
-            <a href="mim_sukun.html" class="btn"
-              ><i class="fas fa-book-open"></i>Pelajari</a
-            >
-          </div>
-        </div>
-
-        <!-- Materi 3 -->
-        <div class="materi-card" data-kategori="Lam Ta'rif">
-          <div class="card-header">
-            <img src="gambar/ilustasi al quran.jpg" alt="Lam Ta'rif" />
-            <span class="card-level">Lanjutan</span>
-          </div>
-          <div class="card-body">
-            <h3>لام التعريف</h3>
-            <p>
-              لِلَّامِ أَلْ حَالَانِ قَبْلَ الْأَحْرُفِ أُوْلَاهُمَا
-              إِظْهَارُهَا فَلْتَعْرِفِ قَبْلَ ارْبَعٍ مَعْ عَشْرَةٍ خُذْ
-              عِلمَهُ مِنْ أَبْغِ حَجَّكَ وَ خَفْ عَقِيْمَهُ
-              ثَانِيْهِمَاإِدْغَامُهَا فِيْ أَرْبَعِ وَ عَشْرَةٍ أَيْضًا وَ
-              رَمْزَهَا فَع
-            </p>
-          </div>
-          <div class="card-footer">
-            <a href="lam_tarif.html" class="btn"
-              ><i class="fas fa-book-open"></i> Pelajari</a
-            >
-          </div>
-        </div>
-
-        <!-- Materi 4 -->
-        <div class="materi-card" data-kategori="Qolqolah">
-          <div class="card-header">
-            <img src="gambar/Al Quran tafsir.jpg" alt="Qalqalah" />
-            <span class="card-level">Dasar</span>
-          </div>
-          <div class="card-body">
-            <h3>القلقلة</h3>
-            <p>
-              وتعريف القلقلة في علم التجويد هو إظهار الذبذبات الصوتية عند تلاوة
-              الكلمات الواردة في حرف القلقلة، وهو ما كان لفظه غير منون أوموقوفاً
-            </p>
-          </div>
-          <div class="card-footer">
-            <a href="qalqalah.html" class="btn"
-              ><i class="fas fa-book-open"></i>Pelajari</a
-            >
-          </div>
-        </div>
+        <!-- Materi cards akan diisi secara dinamis dari database -->
       </div>
     </div>
 
@@ -522,46 +508,467 @@
       <p>&copy; 2025 SohibTajwid - Media Pembelajaran Ilmu Tajwid</p>
     </footer>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const searchInput = document.querySelector(".search-box input");
-        const filterSelect = document.querySelector(".filter select");
-        const cards = document.querySelectorAll(".materi-card");
+      // Wait for environment loader to be ready
+      async function initializeSupabase() {
+        console.log("Initializing Supabase...");
 
-        function filterMateri() {
-          const keyword = searchInput.value.trim().toLowerCase();
-          const kategori = filterSelect.value;
-
-          cards.forEach(function (card) {
-            const title = card
-              .querySelector(".card-body h3")
-              .innerText.toLowerCase();
-            const desc = card
-              .querySelector(".card-body p")
-              .innerText.toLowerCase();
-            const cardKategori = card
-              .getAttribute("data-kategori")
-              .toLowerCase();
-
-            // Cari juga di data-kategori selain judul & deskripsi
-            const matchKategori =
-              kategori === "Semua Kategori" ||
-              cardKategori === kategori.toLowerCase();
-            const matchKeyword =
-              title.includes(keyword) ||
-              desc.includes(keyword) ||
-              cardKategori.includes(keyword); // Tambahkan pencarian di kategori
-
-            // Tampilkan jika match kedua-duanya
-            if (matchKategori && matchKeyword) {
-              card.style.display = "";
-            } else {
-              card.style.display = "none";
-            }
-          });
+        // Wait for Supabase to be loaded
+        while (!window.supabase) {
+          console.log("Waiting for Supabase to load...");
+          await new Promise((resolve) => setTimeout(resolve, 100));
         }
 
-        searchInput.addEventListener("input", filterMateri);
-        filterSelect.addEventListener("change", filterMateri);
+        // Wait for environment loader to be ready
+        while (!window.envLoader || !window.envLoader.loaded) {
+          console.log("Waiting for environment loader...");
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+
+        // Supabase Configuration dari Environment Variables
+        const SUPABASE_URL = getEnv("SUPABASE_URL");
+        const SUPABASE_ANON_KEY = getEnv("SUPABASE_ANON_KEY");
+
+        console.log("Environment variables loaded:");
+        console.log("SUPABASE_URL:", SUPABASE_URL);
+        console.log(
+          "SUPABASE_ANON_KEY:",
+          SUPABASE_ANON_KEY ? "***" + SUPABASE_ANON_KEY.slice(-10) : "NOT FOUND"
+        );
+
+        // Validate environment variables
+        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+          console.error(
+            "Environment variables tidak ditemukan. Pastikan file .env sudah ada dan berisi SUPABASE_URL dan SUPABASE_ANON_KEY."
+          );
+          return null;
+        }
+
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_ANON_KEY
+        );
+
+        console.log("Supabase client initialized successfully");
+
+        // Test connection
+        try {
+          console.log("Testing Supabase connection...");
+          const { data, error } = await supabase
+            .from("materi")
+            .select("count")
+            .limit(1);
+
+          if (error) {
+            console.warn("Supabase connection test failed:", error);
+          } else {
+            console.log("Supabase connection test successful");
+          }
+        } catch (error) {
+          console.warn("Supabase connection test error:", error);
+        }
+
+        return supabase;
+      }
+
+      // Database functions
+      class MateriDatabase {
+        constructor(supabaseClient) {
+          this.supabase = supabaseClient;
+        }
+
+        // Get all materi
+        async getAllMateri() {
+          try {
+            console.log("Attempting to fetch materi from Supabase...");
+            console.log("Supabase URL:", this.supabase.supabaseUrl);
+
+            const { data, error } = await this.supabase
+              .from("materi")
+              .select("*")
+              .order("created_at", { ascending: false });
+
+            if (error) {
+              console.error("Supabase error:", error);
+              throw error;
+            }
+
+            console.log("Successfully fetched materi:", data);
+            return data || [];
+          } catch (error) {
+            console.error("Error fetching materi:", error);
+            console.error("Error details:", {
+              message: error.message,
+              details: error.details,
+              hint: error.hint,
+              code: error.code,
+            });
+            return [];
+          }
+        }
+
+        // Get materi by judul latin
+        async getMateriByJudulLatin(judulLatin) {
+          try {
+            const { data, error } = await this.supabase
+              .from("materi")
+              .select("*")
+              .eq("judul_latin", judulLatin)
+              .order("created_at", { ascending: false });
+
+            if (error) throw error;
+            return data;
+          } catch (error) {
+            console.error("Error fetching materi by judul latin:", error);
+            return [];
+          }
+        }
+
+        // Get all unique judul latin
+        async getAllJudulLatin() {
+          try {
+            console.log("Fetching unique judul latin from database...");
+            const { data, error } = await this.supabase
+              .from("materi")
+              .select("judul_latin")
+              .order("judul_latin", { ascending: true });
+
+            if (error) {
+              console.error("Supabase error fetching judul latin:", error);
+              throw error;
+            }
+
+            // Extract unique judul latin
+            const uniqueJudulLatin = [
+              ...new Set(data.map((item) => item.judul_latin)),
+            ];
+            console.log("Unique judul latin found:", uniqueJudulLatin);
+            return uniqueJudulLatin;
+          } catch (error) {
+            console.error("Error fetching judul latin:", error);
+            return [];
+          }
+        }
+
+        // Search materi
+        async searchMateri(keyword) {
+          try {
+            const { data, error } = await this.supabase
+              .from("materi")
+              .select("*")
+              .or(
+                `judul.ilike.%${keyword}%,judul_latin.ilike.%${keyword}%,deskripsi.ilike.%${keyword}%`
+              )
+              .order("created_at", { ascending: false });
+
+            if (error) throw error;
+            return data;
+          } catch (error) {
+            console.error("Error searching materi:", error);
+            return [];
+          }
+        }
+
+        // Add new materi
+        async addMateri(materiData) {
+          try {
+            const { data, error } = await this.supabase
+              .from("materi")
+              .insert([materiData])
+              .select();
+
+            if (error) throw error;
+            return data[0];
+          } catch (error) {
+            console.error("Error adding materi:", error);
+            throw error;
+          }
+        }
+
+        // Update materi
+        async updateMateri(id, updateData) {
+          try {
+            const { data, error } = await this.supabase
+              .from("materi")
+              .update(updateData)
+              .eq("id", id)
+              .select();
+
+            if (error) throw error;
+            return data[0];
+          } catch (error) {
+            console.error("Error updating materi:", error);
+            throw error;
+          }
+        }
+
+        // Delete materi
+        async deleteMateri(id) {
+          try {
+            const { error } = await this.supabase
+              .from("materi")
+              .delete()
+              .eq("id", id);
+
+            if (error) throw error;
+            return true;
+          } catch (error) {
+            console.error("Error deleting materi:", error);
+            throw error;
+          }
+        }
+      }
+
+      // Initialize database
+      let db = null;
+
+      // Load materi from database
+      async function loadMateriFromDB() {
+        try {
+          if (!db) {
+            console.log("Database not initialized, using static content");
+            renderStaticContent();
+            return;
+          }
+
+          console.log("Loading materi from database...");
+          const materiList = await db.getAllMateri();
+          console.log("Materi loaded from database:", materiList);
+
+          if (materiList && materiList.length > 0) {
+            renderMateriCards(materiList);
+            console.log("Materi cards rendered from database");
+          } else {
+            console.log("No data from database, using static content");
+            renderStaticContent();
+          }
+        } catch (error) {
+          console.error("Error loading materi:", error);
+          console.log("Using static content as fallback due to error");
+          renderStaticContent();
+        }
+      }
+
+      // Render static content as fallback
+      function renderStaticContent() {
+        console.log("Rendering static content...");
+        // Static content will be shown by default HTML
+      }
+
+      // Render materi cards
+      function renderMateriCards(materiList) {
+        console.log("Rendering materi cards with data:", materiList);
+
+        const materiGrid = document.querySelector(".materi-grid");
+        if (!materiGrid) {
+          console.error("Materi grid not found");
+          return;
+        }
+
+        materiGrid.innerHTML = "";
+
+        if (!materiList || materiList.length === 0) {
+          // Tampilkan pesan "Tidak ada materi" ketika data kosong
+          const emptyCardHTML = `
+            <div class="materi-card empty-state" style="text-align: center; padding: 3rem;">
+              <div class="card-body">
+                <i class="fas fa-book-open" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+                <h3 style="font-size: 1.5em; color: #666; margin-bottom: 0.5rem;">لا توجد مواد</h3>
+                <p style="color: #999; font-size: 1.1em;">Tidak ada materi pembelajaran tersedia saat ini</p>
+                <p style="color: #999; font-size: 0.9em; margin-top: 1rem;">Silakan tambahkan materi melalui admin panel</p>
+              </div>
+            </div>
+          `;
+          materiGrid.innerHTML = emptyCardHTML;
+          console.log("No materi found, showing empty state");
+          return;
+        }
+
+        materiList.forEach((materi, index) => {
+          console.log(`Rendering materi ${index + 1}:`, materi);
+
+          // Gunakan link dinamis berdasarkan ID
+          const linkUrl = `materi-detail.html?id=${materi.id}`;
+
+          const cardHTML = `
+            <div class="materi-card" data-judul-latin="${
+              materi.judul_latin
+            }" data-id="${materi.id}">
+              <div class="card-header">
+                <img src="${materi.gambar_url || "gambar/default.jpg"}" alt="${
+            materi.judul
+          }" />
+                <span class="card-level">${materi.level || "Pemula"}</span>
+              </div>
+              <div class="card-body">
+                <h3 style="font-size: 1.7em">${materi.judul}</h3>
+                <p style="text-align: right; font-size: 1.1em">${
+                  materi.deskripsi
+                }</p>
+              </div>
+              <div class="card-footer">
+                <a href="${linkUrl}" class="btn">
+                  <i class="fas fa-book-open"></i> Pelajari
+                </a>
+              </div>
+            </div>
+          `;
+          materiGrid.innerHTML += cardHTML;
+        });
+
+        console.log(`Rendered ${materiList.length} materi cards`);
+      }
+
+      // Populate judul latin filter from database
+      async function populateJudulLatinFilter() {
+        try {
+          if (!db) {
+            console.log("Database not initialized, using static judul latin");
+            return;
+          }
+
+          console.log("Populating judul latin filter from database...");
+          const judulLatinList = await db.getAllJudulLatin();
+
+          const filterSelect = document.getElementById("judul-latin-filter");
+          if (!filterSelect) {
+            console.error("Judul latin filter select not found");
+            return;
+          }
+
+          // Clear existing options except the first one
+          filterSelect.innerHTML = '<option value="">Semua Judul</option>';
+
+          // Add judul latin from database
+          judulLatinList.forEach((judulLatin) => {
+            const option = document.createElement("option");
+            option.value = judulLatin;
+            option.textContent = judulLatin;
+            filterSelect.appendChild(option);
+          });
+
+          console.log(
+            `Populated filter with ${judulLatinList.length} judul latin`
+          );
+        } catch (error) {
+          console.error("Error populating judul latin filter:", error);
+        }
+      }
+
+      // Enhanced filter function with database
+      async function filterMateriFromDB() {
+        const searchInput = document.querySelector(".search-box input");
+        const filterSelect = document.getElementById("judul-latin-filter");
+
+        const keyword = searchInput.value.trim();
+        const judulLatin = filterSelect.value;
+
+        console.log(
+          "Filtering with keyword:",
+          keyword,
+          "judul latin:",
+          judulLatin
+        );
+
+        try {
+          let materiList = [];
+
+          if (keyword && judulLatin && judulLatin !== "") {
+            // Search with judul latin filter
+            materiList = await db.searchMateri(keyword);
+            materiList = materiList.filter(
+              (m) => m.judul_latin.toLowerCase() === judulLatin.toLowerCase()
+            );
+          } else if (keyword) {
+            // Search only
+            materiList = await db.searchMateri(keyword);
+          } else if (judulLatin && judulLatin !== "") {
+            // Filter by judul latin only
+            materiList = await db.getMateriByJudulLatin(judulLatin);
+          } else {
+            // Get all
+            materiList = await db.getAllMateri();
+          }
+
+          renderMateriCards(materiList);
+        } catch (error) {
+          console.error("Error filtering materi:", error);
+        }
+      }
+
+      // Admin functions (optional)
+      async function addNewMateri() {
+        const newMateri = {
+          judul: "مادة جديدة",
+          judul_latin: "Materi Baru",
+          deskripsi: "وصف المادة الجديدة",
+          level: "Pemula",
+          gambar_url: "gambar/default.jpg",
+          link_url: "#",
+          created_at: new Date().toISOString(),
+        };
+
+        try {
+          const result = await db.addMateri(newMateri);
+          console.log("Materi added:", result);
+          loadMateriFromDB(); // Reload the list
+          populateJudulLatinFilter(); // Reload judul latin filter
+        } catch (error) {
+          console.error("Error adding materi:", error);
+        }
+      }
+
+      // Function to add new judul latin (for admin)
+      async function addNewJudulLatin(judulLatinName) {
+        const newMateri = {
+          judul: `مادة ${judulLatinName}`,
+          judul_latin: judulLatinName,
+          deskripsi: `وصف المادة في ${judulLatinName}`,
+          level: "Pemula",
+          gambar_url: "gambar/default.jpg",
+          link_url: "#",
+          created_at: new Date().toISOString(),
+        };
+
+        try {
+          const result = await db.addMateri(newMateri);
+          console.log("New judul latin added:", result);
+          loadMateriFromDB(); // Reload the list
+          populateJudulLatinFilter(); // Reload judul latin filter
+        } catch (error) {
+          console.error("Error adding new judul latin:", error);
+        }
+      }
+
+      // Initialize when DOM is loaded
+      document.addEventListener("DOMContentLoaded", async function () {
+        console.log("DOM loaded, starting initialization...");
+
+        // Initialize Supabase and database
+        const supabaseClient = await initializeSupabase();
+        if (supabaseClient) {
+          db = new MateriDatabase(supabaseClient);
+          console.log("Database initialized successfully");
+        } else {
+          console.log("Failed to initialize Supabase, using static content");
+        }
+
+        // Load materi from database
+        console.log("Starting to load materi...");
+        loadMateriFromDB();
+
+        // Populate judul latin filter from database
+        populateJudulLatinFilter();
+
+        const searchInput = document.querySelector(".search-box input");
+        const filterSelect = document.getElementById("judul-latin-filter");
+
+        // Enhanced event listeners
+        searchInput.addEventListener("input", filterMateriFromDB);
+        filterSelect.addEventListener("change", filterMateriFromDB);
+
+        // Fallback filter tidak diperlukan lagi karena semua data dari database
+        console.log("All filtering now handled by database");
       });
     </script>
   </body>

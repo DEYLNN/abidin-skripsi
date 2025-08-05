@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Materi - TajwidMaster</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lateef&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Supabase CDN -->
+    <script>
+      function loadSupabase() {
+        return new Promise((resolve) => {
+          const script1 = document.createElement("script");
+          script1.src = "https://unpkg.com/@supabase/supabase-js@2";
+          script1.onload = () => {
+            console.log("Supabase loaded from unpkg CDN");
+            resolve();
+          };
+          script1.onerror = () => {
+            const script2 = document.createElement("script");
+            script2.src =
+              "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+            script2.onload = () => {
+              console.log("Supabase loaded from jsdelivr CDN");
+              resolve();
+            };
+            script2.onerror = () => {
+              const script3 = document.createElement("script");
+              script3.src = "supabase-offline.js";
+              script3.onload = () => {
+                console.log("Supabase loaded from offline version");
+                resolve();
+              };
+              document.head.appendChild(script3);
+            };
+            document.head.appendChild(script2);
+          };
+          document.head.appendChild(script1);
+        });
+      }
+      loadSupabase();
+    </script>
+
+    <!-- Environment Loader -->
+    <script src="env-loader.js"></script>
+    <script src="env.js"></script>
+
+    <style>
+      :root {
+        --primary: #2e7d32;
+        --secondary: #f9f9f9;
+        --accent: #fbc02d;
+        --text: #333;
+        --light: #fff;
+        --dark: #1b5e20;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", "Segoe UI", sans-serif;
+      }
+
+      body {
+        background-color: var(--secondary);
+        color: var(--text);
+      }
+
+      header {
+        background-color: var(--primary);
+        color: var(--light);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo img {
+        height: 40px;
+        margin-right: 10px;
+      }
+
+      .logo h1 {
+        font-family: "Amiri", serif;
+        line-height: 1.4;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+      }
+
+      nav ul li {
+        margin-left: 20px;
+      }
+
+      nav ul li a {
+        color: var(--light);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      nav ul li a:hover {
+        color: var(--accent);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 20px;
+      }
+
+      .materi-detail {
+        background: var(--light);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        margin-bottom: 3rem;
+      }
+
+      .materi-header {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+      }
+
+      .materi-header img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .materi-title {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        color: var(--light);
+        padding: 2rem;
+      }
+
+      .materi-title h1 {
+        font-family: "Amiri", serif;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .meta {
+        display: flex;
+        gap: 20px;
+        font-size: 0.9rem;
+      }
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .materi-body {
+        padding: 2rem;
+      }
+
+      .section {
+        margin-bottom: 3rem;
+      }
+
+      .section h2 {
+        font-family: "Amiri", serif;
+        font-size: 2em;
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .pengertian-awal {
+        text-align: right;
+        font-family: "Amiri", serif;
+        font-size: 1.2em;
+        line-height: 1.8;
+        background: rgba(46, 125, 50, 0.1);
+        padding: 2rem;
+        border-radius: 10px;
+        border-right: 4px solid var(--primary);
+      }
+
+      .hukum-item {
+        background: var(--light);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        border-left: 4px solid var(--accent);
+      }
+
+      .hukum-item h3 {
+        font-family: "Amiri", serif;
+        font-size: 1.5em;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .badge {
+        background: var(--accent);
+        color: var(--text);
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .hukum-item p {
+        font-family: "Amiri", serif;
+        font-size: 1.1em;
+        text-align: right;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .example-box {
+        background: rgba(46, 125, 50, 0.05);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+      }
+
+      .verse {
+        font-family: "Amiri", serif;
+        font-size: 1.3em;
+        text-align: right;
+        direction: rtl;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+
+      .translation {
+        font-size: 0.9rem;
+        color: #666;
+        font-style: italic;
+        margin-bottom: 1rem;
+      }
+
+      .audio-player {
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      .tips-box {
+        background: rgba(255, 213, 79, 0.2);
+        border-left: 4px solid var(--accent);
+        padding: 1.5rem;
+        border-radius: 0 8px 8px 0;
+        margin-top: 1.5rem;
+      }
+
+      .tips-box h4 {
+        color: var(--dark);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "Amiri", serif;
+      }
+
+      .tips-box p {
+        font-family: "Amiri", serif;
+        font-size: 1.1em;
+        text-align: right;
+      }
+
+      .latihan-item {
+        background: var(--light);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        border-left: 4px solid var(--primary);
+      }
+
+      .latihan-item h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+      }
+
+      .latihan-item p {
+        color: #666;
+        margin-bottom: 1rem;
+        line-height: 1.6;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--primary), var(--dark));
+        color: var(--light);
+        padding: 10px 20px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(46, 125, 50, 0.4);
+      }
+
+      .loading {
+        text-align: center;
+        padding: 3rem;
+        font-size: 1.2rem;
+        color: #666;
+      }
+
+      .error {
+        text-align: center;
+        padding: 3rem;
+        color: #d32f2f;
+        background: rgba(211, 47, 47, 0.1);
+        border-radius: 10px;
+        margin: 2rem 0;
+      }
+
+      footer {
+        background-color: var(--primary);
+        color: var(--light);
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .materi-title h1 {
+          font-size: 2rem;
+        }
+
+        .materi-body {
+          padding: 1rem;
+        }
+
+        header {
+          flex-direction: column;
+          padding: 1rem;
+        }
+
+        nav ul {
+          margin-top: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="gambar/tazakka.png" alt="TajwidMaster Logo" />
+        <h1>علم التجويد</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="/">Beranda</a></li>
+          <li><a href="materi.html">Materi</a></li>
+          <li><a href="latihan.html">Latihan</a></li>
+          <li><a href="profil.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div id="loading" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Memuat materi...
+      </div>
+
+      <div id="error" class="error" style="display: none">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>Terjadi kesalahan saat memuat materi. Silakan coba lagi.</p>
+      </div>
+
+      <div id="materi-content" class="materi-detail" style="display: none">
+        <!-- Konten akan diisi secara dinamis -->
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 SohibTajwid - Media Pembelajaran Ilmu Tajwid</p>
+    </footer>
+
+    <script>
+      let db = null;
+
+      // Initialize Supabase
+      async function initializeSupabase() {
+        console.log("Initializing Supabase...");
+
+        while (!window.supabase) {
+          console.log("Waiting for Supabase to load...");
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+
+        while (!window.envLoader || !window.envLoader.loaded) {
+          console.log("Waiting for environment loader...");
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+
+        const SUPABASE_URL = getEnv("SUPABASE_URL");
+        const SUPABASE_ANON_KEY = getEnv("SUPABASE_ANON_KEY");
+
+        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+          console.error("Environment variables tidak ditemukan");
+          return null;
+        }
+
+        const supabase = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_ANON_KEY
+        );
+        console.log("Supabase client initialized successfully");
+
+        return supabase;
+      }
+
+      // Get materi by ID
+      async function getMateriById(id) {
+        try {
+          const { data, error } = await db
+            .from("materi")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+          if (error) throw error;
+          return data;
+        } catch (error) {
+          console.error("Error fetching materi:", error);
+          throw error;
+        }
+      }
+
+      // Render materi content
+      function renderMateriContent(materi) {
+        const materiContent = document.getElementById("materi-content");
+
+        // Debug: log data materi
+        console.log("Materi data:", materi);
+        console.log("materi_inti type:", typeof materi.materi_inti);
+        console.log("latihan_praktis type:", typeof materi.latihan_praktis);
+
+        materiContent.innerHTML = `
+                <div class="materi-header">
+                    <img src="${
+                      materi.gambar_url || "gambar/default.jpg"
+                    }" alt="${materi.judul_latin}" />
+                    <div class="materi-title">
+                        <h1>${materi.judul}</h1>
+                        <div class="meta">
+                            <span class="meta-item">
+                                <i class="far fa-file-alt"></i>${
+                                  materi.jumlah_hukum || 5
+                                } أحكام
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-signal"></i>${
+                                  materi.level || "Pemula"
+                                }
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="materi-body">
+                    <!-- Pengertian Awal -->
+                    <div class="section">
+                        <h2>تعريف ${materi.judul.split(" ")[0]}</h2>
+                        <div class="pengertian-awal">
+                            ${materi.pengertian_awal || materi.deskripsi}
+                        </div>
+                    </div>
+                    
+                    <!-- Materi Inti -->
+                    <div class="section">
+                        <h2>المادة الأساسية</h2>
+                        ${renderMateriInti(materi.materi_inti)}
+                    </div>
+                    
+                    <!-- Latihan Praktis -->
+                    <div class="section">
+                        <h2>التمرين العملي</h2>
+                        ${renderLatihanPraktis(materi.latihan_praktis)}
+                    </div>
+                </div>
+            `;
+
+        materiContent.style.display = "block";
+      }
+
+      // Render materi inti
+      function renderMateriInti(materiInti) {
+        if (!materiInti) return "<p>Tidak ada materi inti tersedia.</p>";
+
+        try {
+          // Cek apakah sudah berupa object atau masih string
+          let hukumList;
+          if (typeof materiInti === "string") {
+            hukumList = JSON.parse(materiInti);
+          } else {
+            hukumList = materiInti;
+          }
+
+          if (!Array.isArray(hukumList)) {
+            console.error("materi_inti bukan array:", hukumList);
+            return "<p>Format materi inti tidak valid.</p>";
+          }
+
+          return hukumList
+            .map(
+              (hukum) => `
+                    <div class="hukum-item">
+                        <h3>
+                            <span class="badge">القانون ${hukum.id}</span>
+                            ${hukum.judul}
+                        </h3>
+                        <p>${hukum.deskripsi}</p>
+                        
+                        <div class="example-box">
+                            <div class="verse">${hukum.contoh_ayat}</div>
+                            <div class="translation">"${hukum.terjemahan}"</div>
+                            ${
+                              hukum.audio_url
+                                ? `
+                                <audio controls class="audio-player">
+                                    <source src="${hukum.audio_url}" type="audio/mpeg" />
+                                    Browser tidak mendukung audio
+                                </audio>
+                            `
+                                : ""
+                            }
+                        </div>
+                        
+                        ${
+                          hukum.tips
+                            ? `
+                            <div class="tips-box">
+                                <h4><i class="fas fa-lightbulb"></i> ${hukum.tips.judul}</h4>
+                                <p>${hukum.tips.konten}</p>
+                            </div>
+                        `
+                            : ""
+                        }
+                    </div>
+                `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error parsing materi inti:", error);
+          console.error("Raw materi_inti:", materiInti);
+          return "<p>Error parsing materi inti: " + error.message + "</p>";
+        }
+      }
+
+      // Render latihan praktis
+      function renderLatihanPraktis(latihanPraktis) {
+        if (!latihanPraktis)
+          return "<p>Tidak ada latihan praktis tersedia.</p>";
+
+        try {
+          // Cek apakah sudah berupa object atau masih string
+          let latihanList;
+          if (typeof latihanPraktis === "string") {
+            latihanList = JSON.parse(latihanPraktis);
+          } else {
+            latihanList = latihanPraktis;
+          }
+
+          if (!Array.isArray(latihanList)) {
+            console.error("latihan_praktis bukan array:", latihanList);
+            return "<p>Format latihan praktis tidak valid.</p>";
+          }
+
+          return latihanList
+            .map(
+              (latihan) => `
+                    <div class="latihan-item">
+                        <h3>${latihan.judul}</h3>
+                        <p>${latihan.deskripsi}</p>
+                        
+                        <div class="example-box">
+                            <div class="verse">${latihan.contoh}</div>
+                            <div class="translation">"${
+                              latihan.terjemahan
+                            }"</div>
+                            ${
+                              latihan.audio_url
+                                ? `
+                                <audio controls class="audio-player">
+                                    <source src="${latihan.audio_url}" type="audio/mpeg" />
+                                    Browser tidak mendukung audio
+                                </audio>
+                            `
+                                : ""
+                            }
+                            <p><strong>Jawaban:</strong> ${latihan.jawaban}</p>
+                            <p><strong>Penjelasan:</strong> ${
+                              latihan.penjelasan
+                            }</p>
+                        </div>
+                    </div>
+                `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error parsing latihan praktis:", error);
+          console.error("Raw latihan_praktis:", latihanPraktis);
+          return "<p>Error parsing latihan praktis: " + error.message + "</p>";
+        }
+      }
+
+      // Load materi berdasarkan ID dari URL
+      async function loadMateriFromURL() {
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const materiId = urlParams.get("id");
+
+          if (!materiId) {
+            throw new Error("ID materi tidak ditemukan");
+          }
+
+          const materi = await getMateriById(materiId);
+          if (!materi) {
+            throw new Error("Materi tidak ditemukan");
+          }
+
+          // Update title
+          document.title = `${materi.judul_latin} - TajwidMaster`;
+
+          // Hide loading, show content
+          document.getElementById("loading").style.display = "none";
+          renderMateriContent(materi);
+        } catch (error) {
+          console.error("Error loading materi:", error);
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("error").style.display = "block";
+          document.getElementById("error").innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>${error.message}</p>
+                `;
+        }
+      }
+
+      // Initialize when DOM is loaded
+      document.addEventListener("DOMContentLoaded", async function () {
+        console.log("DOM loaded, starting initialization...");
+
+        const supabaseClient = await initializeSupabase();
+        if (supabaseClient) {
+          db = supabaseClient;
+          console.log("Database initialized successfully");
+          await loadMateriFromURL();
+        } else {
+          console.log("Failed to initialize Supabase");
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("error").style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>

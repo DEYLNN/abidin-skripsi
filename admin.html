@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - TajwidMaster</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Supabase CDN - Multiple sources for redundancy -->
+    <script>
+      // Try to load Supabase from CDN, fallback to offline version
+      function loadSupabase() {
+        return new Promise((resolve) => {
+          // Try unpkg first
+          const script1 = document.createElement("script");
+          script1.src = "https://unpkg.com/@supabase/supabase-js@2";
+          script1.onload = () => {
+            console.log("Supabase loaded from unpkg CDN");
+            resolve();
+          };
+          script1.onerror = () => {
+            console.log("unpkg failed, trying jsdelivr...");
+
+            // Try jsdelivr
+            const script2 = document.createElement("script");
+            script2.src =
+              "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+            script2.onload = () => {
+              console.log("Supabase loaded from jsdelivr CDN");
+              resolve();
+            };
+            script2.onerror = () => {
+              console.log("CDN failed, loading offline version...");
+
+              // Load offline version
+              const script3 = document.createElement("script");
+              script3.src = "supabase-offline.js";
+              script3.onload = () => {
+                console.log("Supabase loaded from offline version");
+                resolve();
+              };
+              script3.onerror = () => {
+                console.error("All Supabase sources failed");
+                resolve();
+              };
+              document.head.appendChild(script3);
+            };
+            document.head.appendChild(script2);
+          };
+          document.head.appendChild(script1);
+        });
+      }
+
+      // Load Supabase immediately
+      loadSupabase();
+    </script>
+
+    <!-- Dotenv CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/dotenv@16.0.3/lib/main.min.js"></script>
+
+    <!-- Environment Loader -->
+    <script src="env-loader.js"></script>
+
+    <!-- Environment Variables Fallback -->
+    <script src="env.js"></script>
+
+    <style>
+      :root {
+        --primary: #2e7d32;
+        --secondary: #f9f9f9;
+        --accent: #fbc02d;
+        --text: #333;
+        --light: #fff;
+        --dark: #1b5e20;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: var(--secondary);
+      }
+
+      .admin-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 20px;
+      }
+
+      .admin-header {
+        background: var(--light);
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+      }
+
+      .admin-header h1 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .admin-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      .admin-card {
+        background: var(--light);
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #eee;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+        font-family: "Courier New", monospace;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .form-group textarea#materi_inti,
+      .form-group textarea#latihan_praktis {
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .btn {
+        background: linear-gradient(135deg, var(--primary), var(--dark));
+        color: var(--light);
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+      }
+
+      .btn-danger {
+        background: #dc3545;
+      }
+
+      .materi-list {
+        background: var(--light);
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+      }
+
+      .materi-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+      }
+
+      .materi-item:last-child {
+        border-bottom: none;
+      }
+
+      .materi-info h3 {
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .materi-info p {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      .materi-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      .alert {
+        padding: 1rem;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      /* Dynamic Form Styles */
+      .dynamic-form {
+        border: 2px solid #eee;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+        background: #fafafa;
+      }
+
+      .dynamic-form .form-group {
+        background: white;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        position: relative;
+      }
+
+      .dynamic-form .form-group:last-child {
+        margin-bottom: 0;
+      }
+
+      .dynamic-form .form-group label {
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .dynamic-form .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #eee;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .dynamic-form .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .dynamic-form .form-control[rows] {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .remove-item-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+      }
+
+      .remove-item-btn:hover {
+        background: #c82333;
+        transform: scale(1.1);
+      }
+
+      .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--accent);
+      }
+
+      .item-title {
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 1.1rem;
+      }
+
+      .tips-section {
+        background: rgba(255, 213, 79, 0.1);
+        border: 1px solid var(--accent);
+        border-radius: 6px;
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .tips-section h5 {
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .admin-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dynamic-form {
+          padding: 0.5rem;
+        }
+
+        .dynamic-form .form-group {
+          padding: 0.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-container">
+      <div class="admin-header">
+        <h1>Admin Panel - Media Pembelajaran Tajwid</h1>
+        <p>Kelola materi pembelajaran ilmu tajwid</p>
+      </div>
+
+      <div id="alert-container"></div>
+
+      <div class="admin-grid">
+        <!-- Form Tambah/Edit Materi -->
+        <div class="admin-card">
+          <h2 id="form-title">Tambah Materi Baru</h2>
+          <form id="materi-form">
+            <input type="hidden" id="materi-id" />
+
+            <!-- Basic Info -->
+            <div class="form-group">
+              <label for="judul">Judul (Arab)</label>
+              <input type="text" id="judul" required />
+            </div>
+
+            <div class="form-group">
+              <label for="judul_latin">Judul (Latin)</label>
+              <input type="text" id="judul_latin" required />
+            </div>
+
+            <div class="form-group">
+              <label for="deskripsi">Deskripsi (Arab)</label>
+              <textarea id="deskripsi" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="pengertian_awal">Pengertian Awal (Arab)</label>
+              <textarea id="pengertian_awal" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="level">Level</label>
+              <select id="level" required>
+                <option value="Pemula">Pemula</option>
+                <option value="Menengah">Menengah</option>
+                <option value="Lanjutan">Lanjutan</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="gambar_url">Upload Gambar</label>
+              <input type="file" id="gambar_file" accept="image/*" required />
+              <small style="color: #666; display: block; margin-top: 5px">
+                Format: JPG, PNG, GIF. Maksimal 5MB
+              </small>
+              <div id="gambar_preview" style="margin-top: 10px; display: none">
+                <img
+                  id="preview_image"
+                  style="
+                    max-width: 200px;
+                    max-height: 150px;
+                    border-radius: 8px;
+                  "
+                />
+              </div>
+              <input type="hidden" id="gambar_url" />
+            </div>
+
+            <div class="form-group">
+              <label for="jumlah_hukum">Jumlah Hukum</label>
+              <input
+                type="number"
+                id="jumlah_hukum"
+                min="1"
+                max="10"
+                value="5"
+                required
+              />
+            </div>
+
+            <!-- Materi Inti Section -->
+            <div class="form-group">
+              <label>Materi Inti</label>
+              <div style="margin-bottom: 10px">
+                <button
+                  type="button"
+                  class="btn btn-sm"
+                  onclick="generateMateriInti()"
+                >
+                  <i class="fas fa-magic"></i> Generate dari Jumlah Hukum
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-secondary"
+                  onclick="addMateriIntiItem()"
+                >
+                  <i class="fas fa-plus"></i> Tambah Hukum
+                </button>
+                <span
+                  id="materi-inti-count"
+                  style="margin-left: 10px; color: #666; font-size: 0.9rem"
+                ></span>
+              </div>
+
+              <!-- User-friendly form interface -->
+              <div id="materi-inti-form" class="dynamic-form">
+                <!-- Hukum items will be added here dynamically -->
+              </div>
+
+              <!-- Hidden JSON field for storage -->
+              <textarea
+                id="materi_inti"
+                name="materi_inti"
+                style="display: none"
+                required
+              ></textarea>
+            </div>
+
+            <!-- Latihan Praktis Section -->
+            <div class="form-group">
+              <label>Latihan Praktis</label>
+              <div style="margin-bottom: 10px">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-secondary"
+                  onclick="addLatihanPraktisItem()"
+                >
+                  <i class="fas fa-plus"></i> Tambah Latihan
+                </button>
+                <span
+                  id="latihan-praktis-count"
+                  style="margin-left: 10px; color: #666; font-size: 0.9rem"
+                ></span>
+              </div>
+
+              <!-- User-friendly form interface -->
+              <div id="latihan-praktis-form" class="dynamic-form">
+                <!-- Latihan items will be added here dynamically -->
+              </div>
+
+              <!-- Hidden JSON field for storage -->
+              <textarea
+                id="latihan_praktis"
+                name="latihan_praktis"
+                style="display: none"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn" id="submit-btn">
+                Tambah Materi
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="cancel-btn"
+                style="display: none"
+              >
+                Batal
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Daftar Materi -->
+        <div class="admin-card">
+          <h2>Daftar Materi</h2>
+          <div id="materi-list" class="materi-list">
+            <p>Loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Wait for environment loader to be ready
+      async function initializeSupabase() {
+        console.log("Initializing Supabase...");
+
+        // Wait for environment loader to be ready
+        let timeout = 0;
+        while (!window.envLoader || !window.envLoader.loaded) {
+          console.log("Waiting for environment loader...");
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          timeout += 100;
+          if (timeout > 10000) {
+            // 10 second timeout
+            console.error("Timeout waiting for environment loader");
+            return null;
+          }
+        }
+        console.log("Environment loader ready");
+
+        // Wait for Supabase to be loaded
+        timeout = 0;
+        while (!window.supabase) {
+          console.log("Waiting for Supabase library...");
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          timeout += 100;
+          if (timeout > 10000) {
+            // 10 second timeout
+            console.error("Timeout waiting for Supabase library");
+            return null;
+          }
+        }
+        console.log("Supabase library loaded");
+
+        // Supabase Configuration dari Environment Variables
+        const SUPABASE_URL = getEnv("SUPABASE_URL");
+        const SUPABASE_ANON_KEY = getEnv("SUPABASE_ANON_KEY");
+
+        console.log("Environment variables:", {
+          SUPABASE_URL: SUPABASE_URL ? "SET" : "NOT SET",
+          SUPABASE_ANON_KEY: SUPABASE_ANON_KEY ? "SET" : "NOT SET",
+        });
+
+        // Validate environment variables
+        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+          console.error(
+            "Environment variables tidak ditemukan. Pastikan file .env sudah ada dan berisi SUPABASE_URL dan SUPABASE_ANON_KEY."
+          );
+          return null;
+        }
+
+        try {
+          // Initialize Supabase client
+          const supabase = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+          );
+
+          console.log("Supabase client initialized with environment variables");
+          return supabase;
+        } catch (error) {
+          console.error("Error creating Supabase client:", error);
+          return null;
+        }
+      }
+
+      // Admin Database Class
+      class AdminDatabase {
+        constructor(supabaseClient) {
+          this.supabase = supabaseClient;
+        }
+
+        async getAllMateri() {
+          try {
+            const { data, error } = await this.supabase
+              .from("materi")
+              .select("*")
+              .order("created_at", { ascending: false });
+
+            if (error) throw error;
+            return data;
+          } catch (error) {
+            console.error("Error fetching materi:", error);
+            return [];
+          }
+        }
+
+        async addMateri(materiData) {
+          try {
+            const { data, error } = await this.supabase
+              .from("materi")
+              .insert([materiData])
+              .select();
+
+            if (error) throw error;
+            return data[0];
+          } catch (error) {
+            console.error("Error adding materi:", error);
+            throw error;
+          }
+        }
+
+        async updateMateri(id, updateData) {
+          try {
+            const { data, error } = await this.supabase
+              .from("materi")
+              .update(updateData)
+              .eq("id", id)
+              .select();
+
+            if (error) throw error;
+            return data[0];
+          } catch (error) {
+            console.error("Error updating materi:", error);
+            throw error;
+          }
+        }
+
+        async deleteMateri(id) {
+          try {
+            const { error } = await this.supabase
+              .from("materi")
+              .delete()
+              .eq("id", id);
+
+            if (error) throw error;
+            return true;
+          } catch (error) {
+            console.error("Error deleting materi:", error);
+            throw error;
+          }
+        }
+      }
+
+      let db = null;
+      let isEditing = false;
+      let currentEditId = null;
+
+      // UI Functions
+      function showAlert(message, type = "success") {
+        const alertContainer = document.getElementById("alert-container");
+        const alert = document.createElement("div");
+        alert.className = `alert alert-${type}`;
+        alert.textContent = message;
+        alertContainer.appendChild(alert);
+
+        setTimeout(() => {
+          alert.remove();
+        }, 3000);
+      }
+
+      function renderMateriList(materiList) {
+        const container = document.getElementById("materi-list");
+
+        if (materiList.length === 0) {
+          container.innerHTML = "<p>Tidak ada materi</p>";
+          return;
+        }
+
+        container.innerHTML = materiList
+          .map((materi) => {
+            // Count hukum and latihan
+            let hukumCount = 0;
+            let latihanCount = 0;
+
+            try {
+              if (materi.materi_inti) {
+                const materiInti =
+                  typeof materi.materi_inti === "string"
+                    ? JSON.parse(materi.materi_inti)
+                    : materi.materi_inti;
+                hukumCount = Array.isArray(materiInti) ? materiInti.length : 0;
+              }
+
+              if (materi.latihan_praktis) {
+                const latihanPraktis =
+                  typeof materi.latihan_praktis === "string"
+                    ? JSON.parse(materi.latihan_praktis)
+                    : materi.latihan_praktis;
+                latihanCount = Array.isArray(latihanPraktis)
+                  ? latihanPraktis.length
+                  : 0;
+              }
+            } catch (error) {
+              console.error(
+                "Error counting items for materi:",
+                materi.id,
+                error
+              );
+            }
+
+            return `
+                <div class="materi-item">
+                    <div class="materi-info">
+                        <h3>${materi.judul}</h3>
+                        <p>${materi.judul_latin} • ${materi.level} • ${
+              materi.jumlah_hukum || 0
+            } hukum • ${latihanCount} latihan</p>
+                        <small style="color: #999;">
+                          ${
+                            materi.pengertian_awal
+                              ? "✓ Pengertian awal"
+                              : "✗ Pengertian awal"
+                          } • 
+                          ${
+                            hukumCount > 0 ? "✓ Materi inti" : "✗ Materi inti"
+                          } • 
+                          ${
+                            latihanCount > 0
+                              ? "✓ Latihan praktis"
+                              : "✗ Latihan praktis"
+                          }
+                        </small>
+                    </div>
+                    <div class="materi-actions">
+                        <button class="btn btn-sm" onclick="editMateri('${
+                          materi.id
+                        }')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteMateri('${
+                          materi.id
+                        }')">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+              `;
+          })
+          .join("");
+      }
+
+      function loadMateriList() {
+        if (!db) {
+          console.error("Database not initialized");
+          showAlert("Database belum diinisialisasi", "error");
+          return;
+        }
+
+        db.getAllMateri()
+          .then((materiList) => {
+            renderMateriList(materiList);
+          })
+          .catch((error) => {
+            showAlert("Error loading materi: " + error.message, "error");
+          });
+      }
+
+      function resetForm() {
+        document.getElementById("materi-form").reset();
+        document.getElementById("materi-id").value = "";
+        document.getElementById("form-title").textContent =
+          "Tambah Materi Baru";
+        document.getElementById("submit-btn").textContent = "Tambah Materi";
+        document.getElementById("cancel-btn").style.display = "none";
+        isEditing = false;
+        currentEditId = null;
+
+        // Clear dynamic forms
+        document.getElementById("materi-inti-form").innerHTML = "";
+        document.getElementById("latihan-praktis-form").innerHTML = "";
+
+        // Update counts
+        updateMateriIntiCount();
+        updateLatihanPraktisCount();
+
+        // Set default values for hidden textareas
+        document.getElementById("materi_inti").value = "[]";
+        document.getElementById("latihan_praktis").value = "[]";
+      }
+
+      function editMateri(id) {
+        // Find materi by id and populate form
+        db.getAllMateri().then((materiList) => {
+          const materi = materiList.find((m) => m.id === id);
+          if (materi) {
+            document.getElementById("materi-id").value = materi.id;
+            document.getElementById("judul").value = materi.judul;
+            document.getElementById("judul_latin").value =
+              materi.judul_latin || "";
+            document.getElementById("deskripsi").value = materi.deskripsi;
+            document.getElementById("pengertian_awal").value =
+              materi.pengertian_awal || "";
+            document.getElementById("level").value = materi.level;
+            document.getElementById("gambar_url").value = materi.gambar_url;
+            document.getElementById("jumlah_hukum").value =
+              materi.jumlah_hukum || 5;
+
+            // Clear existing dynamic forms
+            document.getElementById("materi-inti-form").innerHTML = "";
+            document.getElementById("latihan-praktis-form").innerHTML = "";
+
+            // Handle Materi Inti
+            if (materi.materi_inti) {
+              try {
+                const materiInti =
+                  typeof materi.materi_inti === "string"
+                    ? JSON.parse(materi.materi_inti)
+                    : materi.materi_inti;
+
+                if (Array.isArray(materiInti)) {
+                  materiInti.forEach((item) => {
+                    addMateriIntiFormItem(item);
+                  });
+                }
+              } catch (error) {
+                console.error("Error parsing materi_inti:", error);
+              }
+            }
+
+            // Handle Latihan Praktis
+            if (materi.latihan_praktis) {
+              try {
+                const latihanPraktis =
+                  typeof materi.latihan_praktis === "string"
+                    ? JSON.parse(materi.latihan_praktis)
+                    : materi.latihan_praktis;
+
+                if (Array.isArray(latihanPraktis)) {
+                  latihanPraktis.forEach((item) => {
+                    addLatihanPraktisFormItem(item);
+                  });
+                }
+              } catch (error) {
+                console.error("Error parsing latihan_praktis:", error);
+              }
+            }
+
+            // Update counts
+            updateMateriIntiCount();
+            updateLatihanPraktisCount();
+
+            document.getElementById("form-title").textContent = "Edit Materi";
+            document.getElementById("submit-btn").textContent = "Update Materi";
+            document.getElementById("cancel-btn").style.display =
+              "inline-block";
+
+            isEditing = true;
+            currentEditId = id;
+          }
+        });
+      }
+
+      async function deleteMateri(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus materi ini?")) {
+          try {
+            await db.deleteMateri(id);
+            showAlert("Materi berhasil dihapus");
+            loadMateriList();
+          } catch (error) {
+            showAlert("Error deleting materi: " + error.message, "error");
+          }
+        }
+      }
+
+      // Event Listeners
+      document
+        .getElementById("materi-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          // Use the new file upload submission function
+          await submitFormWithFiles();
+        });
+
+      document
+        .getElementById("cancel-btn")
+        .addEventListener("click", resetForm);
+
+      // Add real-time count updates
+      document
+        .getElementById("materi-inti-form")
+        .addEventListener("input", function () {
+          updateMateriIntiCount();
+        });
+
+      document
+        .getElementById("latihan-praktis-form")
+        .addEventListener("input", function () {
+          updateLatihanPraktisCount();
+        });
+
+      // Materi Inti Management Functions
+      function generateMateriInti() {
+        const jumlahHukum =
+          parseInt(document.getElementById("jumlah_hukum").value) || 5;
+        const judulLatin =
+          document.getElementById("judul_latin").value || "Materi";
+
+        // Clear existing form
+        const formContainer = document.getElementById("materi-inti-form");
+        formContainer.innerHTML = "";
+
+        // Generate form items
+        for (let i = 1; i <= jumlahHukum; i++) {
+          addMateriIntiFormItem({
+            id: i,
+            judul: `القانون ${i}`,
+            judul_latin: `Hukum ${i}`,
+            deskripsi: `Penjelasan hukum ${i} dalam ${judulLatin}`,
+            contoh_ayat: "مثال",
+            terjemahan: `Contoh hukum ${i} (QS. Al-Baqarah: 2)`,
+            audio_url: `sound/hukum_${i}.opus`,
+            tips: {
+              judul: "نصائح",
+              konten: "محتوى النصائح",
+            },
+          });
+        }
+
+        updateMateriIntiCount();
+        showAlert(
+          `Generated ${jumlahHukum} hukum untuk materi inti`,
+          "success"
+        );
+      }
+
+      function addMateriIntiItem() {
+        const formContainer = document.getElementById("materi-inti-form");
+        const existingItems = formContainer.querySelectorAll(".form-group");
+        const newId = existingItems.length + 1;
+
+        addMateriIntiFormItem({
+          id: newId,
+          judul: `القانون ${newId}`,
+          judul_latin: `Hukum ${newId}`,
+          deskripsi: `Penjelasan hukum ${newId}`,
+          contoh_ayat: "مثال",
+          terjemahan: `Contoh hukum ${newId} (QS. Al-Baqarah: 2)`,
+          audio_url: `sound/hukum_${newId}.opus`,
+          tips: {
+            judul: "نصائح",
+            konten: "محتوى النصائح",
+          },
+        });
+
+        updateMateriIntiCount();
+
+        // Update hidden textarea with current data
+        const materiIntiContainer = document.getElementById("materi-inti-form");
+        const materiIntiGroups =
+          materiIntiContainer.querySelectorAll(".form-group");
+        const materiIntiArray = [];
+
+        materiIntiGroups.forEach((group, index) => {
+          const inputs = group.querySelectorAll("input, textarea");
+          const item = { id: index + 1 };
+
+          inputs.forEach((input) => {
+            if (input.name === "tips_judul" || input.name === "tips_konten") {
+              if (!item.tips) item.tips = {};
+              if (input.name === "tips_judul") item.tips.judul = input.value;
+              if (input.name === "tips_konten") item.tips.konten = input.value;
+            } else {
+              item[input.name] = input.value;
+            }
+          });
+
+          materiIntiArray.push(item);
+        });
+
+        document.getElementById("materi_inti").value =
+          JSON.stringify(materiIntiArray);
+        showAlert("Hukum baru ditambahkan", "success");
+      }
+
+      function addMateriIntiFormItem(data = {}) {
+        const formContainer = document.getElementById("materi-inti-form");
+        const newFormGroup = document.createElement("div");
+        newFormGroup.className = "form-group";
+        newFormGroup.dataset.itemId = data.id || Date.now();
+
+        newFormGroup.innerHTML = `
+          <button type="button" class="remove-item-btn" onclick="removeMateriIntiItem(this)">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="item-header">
+            <span class="item-title">Hukum ${data.id || "Baru"}</span>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label>Judul (Arab)</label>
+              <input type="text" class="form-control" name="judul" value="${
+                data.judul || ""
+              }" required>
+            </div>
+            <div>
+              <label>Judul (Latin)</label>
+              <input type="text" class="form-control" name="judul_latin" value="${
+                data.judul_latin || ""
+              }" required>
+            </div>
+          </div>
+          
+          <label>Deskripsi (Arab)</label>
+          <textarea class="form-control" name="deskripsi" rows="3" required>${
+            data.deskripsi || ""
+          }</textarea>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label>Contoh Ayat (Arab)</label>
+              <input type="text" class="form-control" name="contoh_ayat" value="${
+                data.contoh_ayat || ""
+              }" required>
+            </div>
+            <div>
+              <label>Terjemahan</label>
+              <input type="text" class="form-control" name="terjemahan" value="${
+                data.terjemahan || ""
+              }" required>
+            </div>
+          </div>
+          
+          <label>Upload Audio</label>
+          <input type="file" class="form-control" name="audio_file" accept="audio/*" required>
+          <small style="color: #666; display: block; margin-top: 5px;">
+            Format: MP3, WAV, OGG. Maksimal 10MB
+          </small>
+          <div class="audio_preview" style="margin-top: 10px; display: none;">
+            <audio controls style="width: 100%; max-width: 300px;">
+              <source id="preview_audio" src="" type="audio/mpeg">
+              Browser tidak mendukung audio
+            </audio>
+          </div>
+          <input type="hidden" name="audio_url" value="${
+            data.audio_url || ""
+          }" />
+          
+          <div class="tips-section">
+            <h5><i class="fas fa-lightbulb"></i> Tips</h5>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <label>Judul Tips</label>
+                <input type="text" class="form-control" name="tips_judul" value="${
+                  data.tips?.judul || ""
+                }">
+              </div>
+              <div>
+                <label>Konten Tips</label>
+                <input type="text" class="form-control" name="tips_konten" value="${
+                  data.tips?.konten || ""
+                }">
+              </div>
+            </div>
+          </div>
+        `;
+
+        formContainer.appendChild(newFormGroup);
+
+        // Add event listener for audio file upload
+        const audioFileInput = newFormGroup.querySelector(
+          'input[name="audio_file"]'
+        );
+        if (audioFileInput) {
+          audioFileInput.addEventListener("change", function () {
+            handleAudioUpload(this);
+          });
+        }
+      }
+
+      function removeMateriIntiItem(button) {
+        if (confirm("Apakah Anda yakin ingin menghapus hukum ini?")) {
+          button.closest(".form-group").remove();
+          updateMateriIntiCount();
+
+          // Update hidden textarea with current data
+          const materiIntiContainer =
+            document.getElementById("materi-inti-form");
+          const materiIntiGroups =
+            materiIntiContainer.querySelectorAll(".form-group");
+          const materiIntiArray = [];
+
+          materiIntiGroups.forEach((group, index) => {
+            const inputs = group.querySelectorAll("input, textarea");
+            const item = { id: index + 1 };
+
+            inputs.forEach((input) => {
+              if (input.name === "tips_judul" || input.name === "tips_konten") {
+                if (!item.tips) item.tips = {};
+                if (input.name === "tips_judul") item.tips.judul = input.value;
+                if (input.name === "tips_konten")
+                  item.tips.konten = input.value;
+              } else {
+                item[input.name] = input.value;
+              }
+            });
+
+            materiIntiArray.push(item);
+          });
+
+          document.getElementById("materi_inti").value =
+            JSON.stringify(materiIntiArray);
+          showAlert("Hukum berhasil dihapus", "success");
+        }
+      }
+
+      function updateMateriIntiCount() {
+        const formContainer = document.getElementById("materi-inti-form");
+        const countSpan = document.getElementById("materi-inti-count");
+        const formGroups = formContainer.querySelectorAll(".form-group");
+
+        countSpan.textContent = `${formGroups.length} hukum`;
+        countSpan.style.color = formGroups.length > 0 ? "#28a745" : "#dc3545";
+      }
+
+      // Convert form data to JSON
+      function convertMateriIntiToJSON() {
+        const formContainer = document.getElementById("materi-inti-form");
+        const formGroups = formContainer.querySelectorAll(".form-group");
+        const jsonArray = [];
+
+        formGroups.forEach((group, index) => {
+          const inputs = group.querySelectorAll("input, textarea");
+          const item = {
+            id: index + 1,
+          };
+
+          inputs.forEach((input) => {
+            if (input.name === "tips_judul" || input.name === "tips_konten") {
+              if (!item.tips) item.tips = {};
+              if (input.name === "tips_judul") item.tips.judul = input.value;
+              if (input.name === "tips_konten") item.tips.konten = input.value;
+            } else {
+              item[input.name] = input.value;
+            }
+          });
+
+          jsonArray.push(item);
+        });
+
+        return jsonArray;
+      }
+
+      // Latihan Praktis Management Functions
+      function addLatihanPraktisItem() {
+        const formContainer = document.getElementById("latihan-praktis-form");
+        const existingItems = formContainer.querySelectorAll(".form-group");
+        const newId = existingItems.length + 1;
+
+        addLatihanPraktisFormItem({
+          id: newId,
+          judul: `Latihan ${newId}`,
+          deskripsi: `Deskripsi latihan ${newId}`,
+          contoh: "مثال",
+          terjemahan: `Contoh latihan ${newId} (QS. Al-Baqarah: 2)`,
+          audio_url: `sound/latihan_${newId}.opus`,
+          jawaban: `Jawaban latihan ${newId}`,
+          penjelasan: `Penjelasan latihan ${newId}`,
+        });
+
+        updateLatihanPraktisCount();
+
+        // Update hidden textarea with current data
+        const latihanContainer = document.getElementById(
+          "latihan-praktis-form"
+        );
+        const latihanGroups = latihanContainer.querySelectorAll(".form-group");
+        const latihanArray = [];
+
+        latihanGroups.forEach((group, index) => {
+          const inputs = group.querySelectorAll("input, textarea");
+          const item = { id: index + 1 };
+
+          inputs.forEach((input) => {
+            item[input.name] = input.value;
+          });
+
+          latihanArray.push(item);
+        });
+
+        document.getElementById("latihan_praktis").value =
+          JSON.stringify(latihanArray);
+        showAlert("Latihan baru ditambahkan", "success");
+      }
+
+      function addLatihanPraktisFormItem(data = {}) {
+        const formContainer = document.getElementById("latihan-praktis-form");
+        const newFormGroup = document.createElement("div");
+        newFormGroup.className = "form-group";
+        newFormGroup.dataset.itemId = data.id || Date.now();
+
+        newFormGroup.innerHTML = `
+          <button type="button" class="remove-item-btn" onclick="removeLatihanPraktisItem(this)">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="item-header">
+            <span class="item-title">Latihan ${data.id || "Baru"}</span>
+          </div>
+          
+          <label>Judul Latihan</label>
+          <input type="text" class="form-control" name="judul" value="${
+            data.judul || ""
+          }" required>
+          
+          <label>Deskripsi</label>
+          <textarea class="form-control" name="deskripsi" rows="3" required>${
+            data.deskripsi || ""
+          }</textarea>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label>Contoh Ayat (Arab)</label>
+              <input type="text" class="form-control" name="contoh" value="${
+                data.contoh || ""
+              }" required>
+            </div>
+            <div>
+              <label>Terjemahan</label>
+              <input type="text" class="form-control" name="terjemahan" value="${
+                data.terjemahan || ""
+              }" required>
+            </div>
+          </div>
+          
+          <label>Upload Audio</label>
+          <input type="file" class="form-control" name="audio_file" accept="audio/*" required>
+          <small style="color: #666; display: block; margin-top: 5px;">
+            Format: MP3, WAV, OGG. Maksimal 10MB
+          </small>
+          <div class="audio_preview" style="margin-top: 10px; display: none;">
+            <audio controls style="width: 100%; max-width: 300px;">
+              <source id="preview_audio" src="" type="audio/mpeg">
+              Browser tidak mendukung audio
+            </audio>
+          </div>
+          <input type="hidden" name="audio_url" value="${
+            data.audio_url || ""
+          }" />
+          
+          <label>Jawaban</label>
+          <textarea class="form-control" name="jawaban" rows="3" required>${
+            data.jawaban || ""
+          }</textarea>
+          
+          <label>Penjelasan</label>
+          <textarea class="form-control" name="penjelasan" rows="3">${
+            data.penjelasan || ""
+          }</textarea>
+        `;
+
+        formContainer.appendChild(newFormGroup);
+
+        // Add event listener for audio file upload
+        const audioFileInput = newFormGroup.querySelector(
+          'input[name="audio_file"]'
+        );
+        if (audioFileInput) {
+          audioFileInput.addEventListener("change", function () {
+            handleAudioUpload(this);
+          });
+        }
+      }
+
+      function removeLatihanPraktisItem(button) {
+        if (confirm("Apakah Anda yakin ingin menghapus latihan ini?")) {
+          button.closest(".form-group").remove();
+          updateLatihanPraktisCount();
+
+          // Update hidden textarea with current data
+          const latihanContainer = document.getElementById(
+            "latihan-praktis-form"
+          );
+          const latihanGroups =
+            latihanContainer.querySelectorAll(".form-group");
+          const latihanArray = [];
+
+          latihanGroups.forEach((group, index) => {
+            const inputs = group.querySelectorAll("input, textarea");
+            const item = { id: index + 1 };
+
+            inputs.forEach((input) => {
+              item[input.name] = input.value;
+            });
+
+            latihanArray.push(item);
+          });
+
+          document.getElementById("latihan_praktis").value =
+            JSON.stringify(latihanArray);
+          showAlert("Latihan berhasil dihapus", "success");
+        }
+      }
+
+      function updateLatihanPraktisCount() {
+        const formContainer = document.getElementById("latihan-praktis-form");
+        const countSpan = document.getElementById("latihan-praktis-count");
+        const formGroups = formContainer.querySelectorAll(".form-group");
+
+        countSpan.textContent = `${formGroups.length} latihan`;
+        countSpan.style.color = formGroups.length > 0 ? "#28a745" : "#dc3545";
+      }
+
+      // Convert form data to JSON
+      function convertLatihanPraktisToJSON() {
+        const formContainer = document.getElementById("latihan-praktis-form");
+        const formGroups = formContainer.querySelectorAll(".form-group");
+        const jsonArray = [];
+
+        formGroups.forEach((group, index) => {
+          const inputs = group.querySelectorAll("input, textarea");
+          const item = {
+            id: index + 1,
+          };
+
+          inputs.forEach((input) => {
+            item[input.name] = input.value;
+          });
+
+          jsonArray.push(item);
+        });
+
+        return jsonArray;
+      }
+
+      // File Upload Handling Functions
+      function handleImageUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+          showAlert("Ukuran file terlalu besar. Maksimal 5MB.", "error");
+          input.value = "";
+          return;
+        }
+
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          showAlert("File harus berupa gambar.", "error");
+          input.value = "";
+          return;
+        }
+
+        // Show preview
+        const preview = document.getElementById("gambar_preview");
+        const previewImg = document.getElementById("preview_image");
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          previewImg.src = e.target.result;
+          preview.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+
+        // Generate filename for preview (actual URL will be set after upload)
+        const timestamp = Date.now();
+        const extension = file.name.split(".").pop();
+        const filename = `gambar_${timestamp}.${extension}`;
+        // URL will be updated after upload to Supabase Storage
+      }
+
+      function handleAudioUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        // Validate file size (10MB max)
+        if (file.size > 10 * 1024 * 1024) {
+          showAlert("Ukuran file terlalu besar. Maksimal 10MB.", "error");
+          input.value = "";
+          return;
+        }
+
+        // Validate file type
+        if (!file.type.startsWith("audio/")) {
+          showAlert("File harus berupa audio.", "error");
+          input.value = "";
+          return;
+        }
+
+        // Show preview
+        const preview = input.parentElement.querySelector(".audio_preview");
+        const audioElement = preview.querySelector("audio source");
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          audioElement.src = e.target.result;
+          preview.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+
+        // Generate filename for preview (actual URL will be set after upload)
+        const timestamp = Date.now();
+        const extension = file.name.split(".").pop();
+        const filename = `audio_${timestamp}.${extension}`;
+        // URL will be updated after upload to Supabase Storage
+      }
+
+      // Enhanced form submission with file uploads
+      async function submitFormWithFiles() {
+        const form = document.getElementById("materi-form");
+        const formData = new FormData();
+
+        // Get main form data
+        const mainInputs = form.querySelectorAll("input, textarea, select");
+        mainInputs.forEach((input) => {
+          if (input.type === "file") {
+            if (input.files[0]) {
+              formData.append(input.id, input.files[0]);
+            }
+          } else {
+            formData.append(input.id, input.value);
+          }
+        });
+
+        // Get dynamic form data
+        const materiIntiForm = document.getElementById("materi-inti-form");
+        const latihanPraktisForm = document.getElementById(
+          "latihan-praktis-form"
+        );
+
+        // Process materi inti files
+        const materiIntiItems = materiIntiForm.querySelectorAll(".form-group");
+        const materiIntiData = [];
+
+        materiIntiItems.forEach((item, index) => {
+          const itemData = { id: index + 1 };
+          const inputs = item.querySelectorAll("input, textarea");
+
+          inputs.forEach((input) => {
+            if (input.type === "file" && input.files[0]) {
+              const timestamp = Date.now() + index;
+              const extension = input.files[0].name.split(".").pop();
+              const filename = `audio_${timestamp}.${extension}`;
+              formData.append(`materi_inti_audio_${index}`, input.files[0]);
+              itemData[
+                input.name.replace("_file", "_url")
+              ] = `sound/${filename}`;
+            } else if (input.type !== "file") {
+              if (input.name === "tips_judul" || input.name === "tips_konten") {
+                if (!itemData.tips) itemData.tips = {};
+                if (input.name === "tips_judul")
+                  itemData.tips.judul = input.value;
+                if (input.name === "tips_konten")
+                  itemData.tips.konten = input.value;
+              } else {
+                itemData[input.name] = input.value;
+              }
+            }
+          });
+
+          materiIntiData.push(itemData);
+        });
+
+        // Process latihan praktis files
+        const latihanPraktisItems =
+          latihanPraktisForm.querySelectorAll(".form-group");
+        const latihanPraktisData = [];
+
+        latihanPraktisItems.forEach((item, index) => {
+          const itemData = { id: index + 1 };
+          const inputs = item.querySelectorAll("input, textarea");
+
+          inputs.forEach((input) => {
+            if (input.type === "file" && input.files[0]) {
+              const timestamp = Date.now() + index + 1000;
+              const extension = input.files[0].name.split(".").pop();
+              const filename = `audio_${timestamp}.${extension}`;
+              formData.append(`latihan_audio_${index}`, input.files[0]);
+              itemData[
+                input.name.replace("_file", "_url")
+              ] = `sound/${filename}`;
+            } else if (input.type !== "file") {
+              itemData[input.name] = input.value;
+            }
+          });
+
+          latihanPraktisData.push(itemData);
+        });
+
+        // Add JSON data to form and update hidden textareas
+        const materiIntiJson = JSON.stringify(materiIntiData);
+        const latihanPraktisJson = JSON.stringify(latihanPraktisData);
+
+        formData.append("materi_inti", materiIntiJson);
+        formData.append("latihan_praktis", latihanPraktisJson);
+
+        // Update hidden textareas
+        document.getElementById("materi_inti").value = materiIntiJson;
+        document.getElementById("latihan_praktis").value = latihanPraktisJson;
+
+        try {
+          // Upload files first
+          const uploadedFiles = await uploadFiles(formData);
+
+          // Update URLs with Supabase Storage URLs
+          let gambarUrl = formData.get("gambar_url");
+          const materiIntiData = JSON.parse(formData.get("materi_inti"));
+          const latihanPraktisData = JSON.parse(
+            formData.get("latihan_praktis")
+          );
+
+          // Update main image URL
+          const imageFile = uploadedFiles.find(
+            (f) => f.field === "gambar_file"
+          );
+          if (imageFile) {
+            gambarUrl = imageFile.url;
+          }
+
+          // Update audio URLs in materi inti
+          materiIntiData.forEach((item, index) => {
+            const audioFile = uploadedFiles.find(
+              (f) => f.field === `materi_inti_audio_${index}`
+            );
+            if (audioFile) {
+              item.audio_url = audioFile.url;
+            }
+          });
+
+          // Update audio URLs in latihan praktis
+          latihanPraktisData.forEach((item, index) => {
+            const audioFile = uploadedFiles.find(
+              (f) => f.field === `latihan_audio_${index}`
+            );
+            if (audioFile) {
+              item.audio_url = audioFile.url;
+            }
+          });
+
+          // Then save to database
+          const materiData = {
+            judul: formData.get("judul"),
+            judul_latin: formData.get("judul_latin"),
+            deskripsi: formData.get("deskripsi"),
+            pengertian_awal: formData.get("pengertian_awal"),
+            level: formData.get("level"),
+            gambar_url: gambarUrl,
+            jumlah_hukum: parseInt(formData.get("jumlah_hukum")),
+            materi_inti: JSON.stringify(materiIntiData),
+            latihan_praktis: JSON.stringify(latihanPraktisData),
+          };
+
+          if (currentEditId) {
+            await db.updateMateri(currentEditId, materiData);
+            showAlert("Materi berhasil diperbarui!", "success");
+          } else {
+            await db.addMateri(materiData);
+            showAlert("Materi berhasil ditambahkan!", "success");
+          }
+
+          resetForm();
+          loadMateriList();
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          showAlert("Terjadi kesalahan saat menyimpan materi.", "error");
+        }
+      }
+
+      async function uploadFiles(formData) {
+        try {
+          const uploadedFiles = [];
+
+          // Upload main image file
+          const imageFile = document.getElementById("gambar_file").files[0];
+          if (imageFile) {
+            const timestamp = Date.now();
+            const extension = imageFile.name.split(".").pop();
+            const filename = `gambar_${timestamp}.${extension}`;
+
+            const { data: imageData, error: imageError } =
+              await db.supabase.storage
+                .from("abidin")
+                .upload(`gambar/${filename}`, imageFile, {
+                  cacheControl: "3600",
+                  upsert: false,
+                });
+
+            if (imageError) throw imageError;
+
+            const { data: imageUrl } = db.supabase.storage
+              .from("abidin")
+              .getPublicUrl(`gambar/${filename}`);
+
+            uploadedFiles.push({
+              field: "gambar_file",
+              filename: filename,
+              url: imageUrl.publicUrl,
+            });
+          }
+
+          // Upload audio files from materi inti
+          const materiIntiForm = document.getElementById("materi-inti-form");
+          const materiIntiItems =
+            materiIntiForm.querySelectorAll(".form-group");
+
+          for (let i = 0; i < materiIntiItems.length; i++) {
+            const audioFile = materiIntiItems[i].querySelector(
+              'input[name="audio_file"]'
+            ).files[0];
+            if (audioFile) {
+              const timestamp = Date.now() + i;
+              const extension = audioFile.name.split(".").pop();
+              const filename = `audio_${timestamp}.${extension}`;
+
+              const { data: audioData, error: audioError } =
+                await db.supabase.storage
+                  .from("abidin")
+                  .upload(`sound/${filename}`, audioFile, {
+                    cacheControl: "3600",
+                    upsert: false,
+                  });
+
+              if (audioError) throw audioError;
+
+              const { data: audioUrl } = db.supabase.storage
+                .from("abidin")
+                .getPublicUrl(`sound/${filename}`);
+
+              uploadedFiles.push({
+                field: `materi_inti_audio_${i}`,
+                filename: filename,
+                url: audioUrl.publicUrl,
+              });
+            }
+          }
+
+          // Upload audio files from latihan praktis
+          const latihanPraktisForm = document.getElementById(
+            "latihan-praktis-form"
+          );
+          const latihanPraktisItems =
+            latihanPraktisForm.querySelectorAll(".form-group");
+
+          for (let i = 0; i < latihanPraktisItems.length; i++) {
+            const audioFile = latihanPraktisItems[i].querySelector(
+              'input[name="audio_file"]'
+            ).files[0];
+            if (audioFile) {
+              const timestamp = Date.now() + i + 1000;
+              const extension = audioFile.name.split(".").pop();
+              const filename = `audio_${timestamp}.${extension}`;
+
+              const { data: audioData, error: audioError } =
+                await db.supabase.storage
+                  .from("abidin")
+                  .upload(`sound/${filename}`, audioFile, {
+                    cacheControl: "3600",
+                    upsert: false,
+                  });
+
+              if (audioError) throw audioError;
+
+              const { data: audioUrl } = db.supabase.storage
+                .from("abidin")
+                .getPublicUrl(`sound/${filename}`);
+
+              uploadedFiles.push({
+                field: `latihan_audio_${i}`,
+                filename: filename,
+                url: audioUrl.publicUrl,
+              });
+            }
+          }
+
+          console.log("Files uploaded successfully:", uploadedFiles);
+          return uploadedFiles;
+        } catch (error) {
+          console.error("Error uploading files:", error);
+          throw new Error(`Upload failed: ${error.message}`);
+        }
+      }
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Initialize Supabase and database
+        const supabaseClient = await initializeSupabase();
+        if (supabaseClient) {
+          db = new AdminDatabase(supabaseClient);
+          console.log("Admin database initialized successfully");
+
+          // Load materi list only if database is initialized
+          loadMateriList();
+
+          // Add default items to forms
+          addMateriIntiItem();
+          addLatihanPraktisItem();
+
+          // Set default values for hidden textareas
+          document.getElementById("materi_inti").value = "[]";
+          document.getElementById("latihan_praktis").value = "[]";
+
+          // Add file upload event listeners
+          document
+            .getElementById("gambar_file")
+            .addEventListener("change", function () {
+              handleImageUpload(this);
+            });
+        } else {
+          console.error("Failed to initialize Supabase client");
+          showAlert(
+            "Gagal menginisialisasi database. Silakan periksa konfigurasi.",
+            "error"
+          );
+        }
+      });
+    </script>
+  </body>
+</html>
