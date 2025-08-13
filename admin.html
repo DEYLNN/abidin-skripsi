@@ -4,201 +4,260 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel - TajwidMaster</title>
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <!-- Supabase CDN - Multiple sources for redundancy -->
-    <script>
-      // Try to load Supabase from CDN, fallback to offline version
-      function loadSupabase() {
-        return new Promise((resolve) => {
-          // Try unpkg first
-          const script1 = document.createElement("script");
-          script1.src = "https://unpkg.com/@supabase/supabase-js@2";
-          script1.onload = () => {
-            console.log("Supabase loaded from unpkg CDN");
-            resolve();
-          };
-          script1.onerror = () => {
-            console.log("unpkg failed, trying jsdelivr...");
 
-            // Try jsdelivr
-            const script2 = document.createElement("script");
-            script2.src =
-              "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-            script2.onload = () => {
-              console.log("Supabase loaded from jsdelivr CDN");
-              resolve();
-            };
-            script2.onerror = () => {
-              console.log("CDN failed, loading offline version...");
+    <!-- AdminLTE CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css"
+    />
 
-              // Load offline version
-              const script3 = document.createElement("script");
-              script3.src = "supabase-offline.js";
-              script3.onload = () => {
-                console.log("Supabase loaded from offline version");
-                resolve();
-              };
-              script3.onerror = () => {
-                console.error("All Supabase sources failed");
-                resolve();
-              };
-              document.head.appendChild(script3);
-            };
-            document.head.appendChild(script2);
-          };
-          document.head.appendChild(script1);
-        });
-      }
+    <!-- Google Font: Source Sans Pro -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700"
+      rel="stylesheet"
+    />
 
-      // Load Supabase immediately
-      loadSupabase();
-    </script>
+    <!-- Supabase CDN -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    <!-- Dotenv CDN -->
+    <!-- Environment related scripts -->
     <script src="https://cdn.jsdelivr.net/npm/dotenv@16.0.3/lib/main.min.js"></script>
-
-    <!-- Environment Loader -->
     <script src="env-loader.js"></script>
-
-    <!-- Environment Variables Fallback -->
     <script src="env.js"></script>
 
     <style>
       :root {
         --primary: #2e7d32;
-        --secondary: #f9f9f9;
-        --accent: #fbc02d;
-        --text: #333;
-        --light: #fff;
         --dark: #1b5e20;
-        --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        --accent: #ffd54f;
+        --light: #ffffff;
+        --text: #333333;
+        --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
+      .brand-image {
+        height: 33px;
+        width: auto;
+        margin-right: 0.5rem;
       }
 
-      body {
-        background-color: var(--secondary);
+      .content-wrapper {
+        min-height: calc(100vh - 57px);
+        background-color: #f4f6f9;
+        padding: 20px;
       }
 
-      .admin-container {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 20px;
+      .main-header {
+        border-bottom: 1px solid #dee2e6;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
-      .admin-header {
-        background: var(--light);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
+      .nav-item .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .main-sidebar {
+        background: linear-gradient(135deg, var(--primary), var(--dark));
+      }
+
+      .brand-link {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .brand-text {
+        color: white !important;
+        font-weight: 600 !important;
+      }
+
+      .nav-sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        margin: 2px 8px 2px 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-sidebar .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transform: translateX(5px);
+        margin-right: 8px;
+        padding-right: 1.25rem;
+      }
+
+      .nav-sidebar .nav-link.active {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        margin-right: 12px;
+        padding-right: 1.5rem;
+      }
+
+      .content-header {
+        background: white;
+        border-bottom: 1px solid #dee2e6;
+        padding: 1rem 0;
         margin-bottom: 2rem;
       }
 
-      .admin-header h1 {
+      .content-header h1 {
         color: var(--primary);
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .card {
         margin-bottom: 1rem;
+        box-shadow: 0 0 1px rgba(0, 0, 0, 0.125), 0 1px 3px rgba(0, 0, 0, 0.2);
       }
 
-      .admin-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-      }
-
-      .admin-card {
-        background: var(--light);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
-      }
-
+      /* Form Styles */
       .form-group {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
       }
 
       .form-group label {
         display: block;
         margin-bottom: 0.5rem;
-        font-weight: 500;
+        font-weight: 600;
         color: var(--text);
+        font-size: 0.95rem;
       }
 
-      .form-group input,
-      .form-group textarea,
-      .form-group select {
+      .form-control {
         width: 100%;
         padding: 0.75rem;
-        border: 2px solid #eee;
-        border-radius: 5px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
         font-size: 1rem;
-        transition: border-color 0.3s;
-        font-family: "Courier New", monospace;
+        transition: all 0.3s ease;
+        background: #fafafa;
       }
 
-      .form-group textarea {
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+      }
+
+      .form-control[rows] {
         resize: vertical;
         min-height: 100px;
       }
 
-      .form-group textarea#materi_inti,
-      .form-group textarea#latihan_praktis {
-        font-size: 0.9rem;
-        line-height: 1.4;
-      }
-
-      .form-group input:focus,
-      .form-group textarea:focus,
-      .form-group select:focus {
-        outline: none;
-        border-color: var(--primary);
-      }
-
+      /* Button Styles */
       .btn {
         background: linear-gradient(135deg, var(--primary), var(--dark));
-        color: var(--light);
+        color: white;
         padding: 0.75rem 1.5rem;
         border: none;
-        border-radius: 5px;
+        border-radius: 8px;
         cursor: pointer;
         font-size: 1rem;
-        font-weight: 500;
-        transition: all 0.3s;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-right: 0.5rem;
       }
 
       .btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        background: linear-gradient(135deg, var(--dark), var(--primary));
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--dark));
       }
 
       .btn-secondary {
-        background: #6c757d;
+        background: linear-gradient(135deg, #6c757d, #495057);
+      }
+
+      .btn-secondary:hover {
+        background: linear-gradient(135deg, #495057, #6c757d);
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
       }
 
       .btn-danger {
-        background: #dc3545;
+        background: linear-gradient(135deg, #dc3545, #c82333);
       }
 
+      .btn-danger:hover {
+        background: linear-gradient(135deg, #c82333, #dc3545);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        text-transform: none;
+        letter-spacing: normal;
+        margin-right: 0;
+      }
+
+      /* Button container styles for soal cards */
+      .card-header .d-flex.gap-5 {
+        margin-left: auto;
+      }
+
+      .card-header .d-flex.gap-5 .btn:last-child {
+        margin-right: 0;
+      }
+
+      /* Alert Styles */
+      .alert {
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border: none;
+        font-weight: 500;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+      }
+
+      .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+      }
+
+      /* Materi List Styles */
       .materi-list {
-        background: var(--light);
-        padding: 2rem;
-        border-radius: 10px;
+        max-height: 600px;
+        overflow-y: auto;
+        background: white;
+        border-radius: 12px;
         box-shadow: var(--shadow);
+        overflow: hidden;
       }
 
       .materi-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem;
-        border-bottom: 1px solid #eee;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+      }
+
+      .materi-item:hover {
+        background: #f8f9fa;
+        transform: translateX(5px);
       }
 
       .materi-item:last-child {
@@ -208,57 +267,43 @@
       .materi-info h3 {
         color: var(--primary);
         margin-bottom: 0.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
       }
 
       .materi-info p {
-        color: #666;
+        color: #6c757d;
         font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .materi-info small {
+        color: #adb5bd;
+        font-size: 0.8rem;
       }
 
       .materi-actions {
         display: flex;
-        gap: 0.5rem;
-      }
-
-      .btn-sm {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-      }
-
-      .alert {
-        padding: 1rem;
-        border-radius: 5px;
-        margin-bottom: 1rem;
-      }
-
-      .alert-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-      }
-
-      .alert-error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
+        gap: 0.75rem;
       }
 
       /* Dynamic Form Styles */
       .dynamic-form {
-        border: 2px solid #eee;
-        border-radius: 8px;
-        padding: 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1.5rem;
         margin-top: 1rem;
-        background: #fafafa;
+        background: #f8f9fa;
       }
 
       .dynamic-form .form-group {
         background: white;
-        padding: 1rem;
-        border-radius: 6px;
-        margin-bottom: 1rem;
-        border: 1px solid #ddd;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        border: 1px solid #dee2e6;
         position: relative;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       }
 
       .dynamic-form .form-group:last-child {
@@ -268,23 +313,26 @@
       .dynamic-form .form-group label {
         font-weight: 600;
         color: var(--primary);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
         display: block;
+        font-size: 0.9rem;
       }
 
       .dynamic-form .form-control {
         width: 100%;
         padding: 0.75rem;
-        border: 2px solid #eee;
-        border-radius: 5px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
         font-size: 1rem;
-        transition: border-color 0.3s;
-        font-family: "Poppins", sans-serif;
+        transition: all 0.3s ease;
+        background: #fafafa;
       }
 
       .dynamic-form .form-control:focus {
         outline: none;
         border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
       }
 
       .dynamic-form .form-control[rows] {
@@ -294,33 +342,35 @@
 
       .remove-item-btn {
         position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
+        top: 1rem;
+        right: 1rem;
         background: #dc3545;
         color: white;
         border: none;
         border-radius: 50%;
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         cursor: pointer;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
       }
 
       .remove-item-btn:hover {
         background: #c82333;
         transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(220, 53, 69, 0.4);
       }
 
       .item-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
         border-bottom: 2px solid var(--accent);
       }
 
@@ -333,205 +383,1163 @@
       .tips-section {
         background: rgba(255, 213, 79, 0.1);
         border: 1px solid var(--accent);
-        border-radius: 6px;
-        padding: 1rem;
-        margin-top: 1rem;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
       }
 
       .tips-section h5 {
         color: var(--dark);
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 600;
       }
 
-      @media (max-width: 768px) {
-        .admin-grid {
-          grid-template-columns: 1fr;
-        }
+      .tips-section h5 i {
+        margin-right: 0.5rem;
+        color: var(--accent);
+      }
 
+      .count-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+      }
+
+      .count-badge.success {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .count-badge.danger {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      /* File Upload Styles */
+      .file-upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        margin-bottom: 1rem;
+      }
+
+      .file-upload-area:hover {
+        border-color: var(--primary);
+        background: rgba(46, 125, 50, 0.05);
+      }
+
+      .file-upload-area i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .preview-container {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+      }
+
+      .preview-container img {
+        max-width: 200px;
+        max-height: 150px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .preview-container audio {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 8px;
+      }
+
+      /* Loading Spinner */
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 0.5rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Login Form Styles */
+      .login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--primary), var(--dark));
+        padding: 20px;
+      }
+
+      .login-box {
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+      }
+
+      .login-logo {
+        margin-bottom: 2rem;
+        color: white;
+      }
+
+      .login-logo h2 {
+        margin: 1rem 0 0.5rem 0;
+        font-weight: 600;
+        color: white;
+      }
+
+      .login-logo p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1.1rem;
+      }
+
+      .login-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .login-card .card {
+        border: none;
+        box-shadow: none;
+      }
+
+      .login-card .card-body {
+        padding: 2rem;
+      }
+
+      .btn-block {
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        text-align: center;
+        border-left: 4px solid var(--primary);
+      }
+
+      .stat-card h3 {
+        color: var(--primary);
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+      }
+
+      .stat-card p {
+        color: #6c757d;
+        margin: 0;
+        font-weight: 500;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         .dynamic-form {
-          padding: 0.5rem;
+          padding: 1rem;
         }
 
         .dynamic-form .form-group {
-          padding: 0.75rem;
+          padding: 1rem;
+        }
+
+        .materi-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .materi-actions {
+          width: 100%;
+          justify-content: flex-end;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
-  <body>
-    <div class="admin-container">
-      <div class="admin-header">
-        <h1>Admin Panel - Media Pembelajaran Tajwid</h1>
-        <p>Kelola materi pembelajaran ilmu tajwid</p>
-      </div>
-
-      <div id="alert-container"></div>
-
-      <div class="admin-grid">
-        <!-- Form Tambah/Edit Materi -->
-        <div class="admin-card">
-          <h2 id="form-title">Tambah Materi Baru</h2>
-          <form id="materi-form">
-            <input type="hidden" id="materi-id" />
-
-            <!-- Basic Info -->
-            <div class="form-group">
-              <label for="judul">Judul (Arab)</label>
-              <input type="text" id="judul" required />
-            </div>
-
-            <div class="form-group">
-              <label for="judul_latin">Judul (Latin)</label>
-              <input type="text" id="judul_latin" required />
-            </div>
-
-            <div class="form-group">
-              <label for="deskripsi">Deskripsi (Arab)</label>
-              <textarea id="deskripsi" rows="3" required></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="pengertian_awal">Pengertian Awal (Arab)</label>
-              <textarea id="pengertian_awal" rows="4" required></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="level">Level</label>
-              <select id="level" required>
-                <option value="Pemula">Pemula</option>
-                <option value="Menengah">Menengah</option>
-                <option value="Lanjutan">Lanjutan</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="gambar_url">Upload Gambar</label>
-              <input type="file" id="gambar_file" accept="image/*" required />
-              <small style="color: #666; display: block; margin-top: 5px">
-                Format: JPG, PNG, GIF. Maksimal 5MB
-              </small>
-              <div id="gambar_preview" style="margin-top: 10px; display: none">
-                <img
-                  id="preview_image"
-                  style="
-                    max-width: 200px;
-                    max-height: 150px;
-                    border-radius: 8px;
-                  "
-                />
+  <body class="hold-transition sidebar-mini">
+    <!-- Login Form -->
+    <div id="loginContainer" style="display: none;">
+      <div class="login-wrapper">
+        <div class="login-box">
+          <div class="login-logo">
+            <img src="gambar/tazakka.png" alt="TajwidMaster Logo" class="brand-image" style="height: 60px; width: auto;">
+            <h2>TajwidMaster</h2>
+            <p>Admin Panel</p>
+          </div>
+          <div class="login-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="text-center mb-4">Login Admin</h4>
+                <div id="loginAlert"></div>
+                <form id="loginForm">
+                  <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" class="form-control" id="loginEmail" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" class="form-control" id="loginPassword" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-block">
+                    <span class="loading-spinner" id="loginSpinner" style="display: none;"></span>
+                    Login
+                  </button>
+                </form>
               </div>
-              <input type="hidden" id="gambar_url" />
             </div>
-
-            <div class="form-group">
-              <label for="jumlah_hukum">Jumlah Hukum</label>
-              <input
-                type="number"
-                id="jumlah_hukum"
-                min="1"
-                max="10"
-                value="5"
-                required
-              />
-            </div>
-
-            <!-- Materi Inti Section -->
-            <div class="form-group">
-              <label>Materi Inti</label>
-              <div style="margin-bottom: 10px">
-                <button
-                  type="button"
-                  class="btn btn-sm"
-                  onclick="generateMateriInti()"
-                >
-                  <i class="fas fa-magic"></i> Generate dari Jumlah Hukum
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-secondary"
-                  onclick="addMateriIntiItem()"
-                >
-                  <i class="fas fa-plus"></i> Tambah Hukum
-                </button>
-                <span
-                  id="materi-inti-count"
-                  style="margin-left: 10px; color: #666; font-size: 0.9rem"
-                ></span>
-              </div>
-
-              <!-- User-friendly form interface -->
-              <div id="materi-inti-form" class="dynamic-form">
-                <!-- Hukum items will be added here dynamically -->
-              </div>
-
-              <!-- Hidden JSON field for storage -->
-              <textarea
-                id="materi_inti"
-                name="materi_inti"
-                style="display: none"
-                required
-              ></textarea>
-            </div>
-
-            <!-- Latihan Praktis Section -->
-            <div class="form-group">
-              <label>Latihan Praktis</label>
-              <div style="margin-bottom: 10px">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-secondary"
-                  onclick="addLatihanPraktisItem()"
-                >
-                  <i class="fas fa-plus"></i> Tambah Latihan
-                </button>
-                <span
-                  id="latihan-praktis-count"
-                  style="margin-left: 10px; color: #666; font-size: 0.9rem"
-                ></span>
-              </div>
-
-              <!-- User-friendly form interface -->
-              <div id="latihan-praktis-form" class="dynamic-form">
-                <!-- Latihan items will be added here dynamically -->
-              </div>
-
-              <!-- Hidden JSON field for storage -->
-              <textarea
-                id="latihan_praktis"
-                name="latihan_praktis"
-                style="display: none"
-                required
-              ></textarea>
-            </div>
-
-            <div class="form-group">
-              <button type="submit" class="btn" id="submit-btn">
-                Tambah Materi
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                id="cancel-btn"
-                style="display: none"
-              >
-                Batal
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Daftar Materi -->
-        <div class="admin-card">
-          <h2>Daftar Materi</h2>
-          <div id="materi-list" class="materi-list">
-            <p>Loading...</p>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Main Admin Interface -->
+    <div id="adminInterface" style="display: none;">
+      <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                <i class="fas fa-bars"></i>
+              </a>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <span class="nav-link">
+                <i class="fas fa-user"></i> 
+                <span id="userEmail"></span>
+              </span>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" id="logoutButton">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+      <!-- Main Sidebar Container -->
+      <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+        <a href="index.html" class="brand-link">
+          <img
+            src="gambar/tazakka.png"
+            alt="TajwidMaster Logo"
+            class="brand-image"
+          />
+          <span class="brand-text font-weight-light">TajwidMaster</span>
+        </a>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <!-- Sidebar Menu -->
+          <nav class="mt-2">
+            <ul
+              class="nav nav-pills nav-sidebar flex-column"
+              data-widget="treeview"
+              role="menu"
+            >
+              <li class="nav-item">
+                <a href="#" class="nav-link active" id="dashboardLink">
+                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                  <p>Dashboard</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" id="materiLink">
+                  <i class="nav-icon fas fa-book"></i>
+                  <p>Manajemen Materi</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" id="latihanLink">
+                  <i class="nav-icon fas fa-book"></i>
+                  <p>Manajemen Latihan</p>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Content Wrapper -->
+      <div class="content-wrapper">
+        <!-- Content Header -->
+        <div class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1 class="m-0" id="page-title">Dashboard</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <!-- Dashboard Content -->
+            <div id="dashboard-content">
+              <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Selamat Datang di TajwidMaster</h3>
+                    </div>
+                    <div class="card-body">
+                      <p>
+                        Pilih menu di sidebar untuk mengelola konten aplikasi.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Stats Overview -->
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <h3 id="total-materi">0</h3>
+                  <p>Total Materi</p>
+                </div>
+                <div class="stat-card">
+                  <h3 id="materi-pemula">0</h3>
+                  <p>Level Pemula</p>
+                </div>
+                <div class="stat-card">
+                  <h3 id="materi-menengah">0</h3>
+                  <p>Level Menengah</p>
+                </div>
+                <div class="stat-card">
+                  <h3 id="materi-lanjutan">0</h3>
+                  <p>Level Lanjutan</p>
+                </div>
+                <div class="stat-card">
+                  <h3 id="total-latihan">0</h3>
+                  <p>Total Latihan</p>
+                </div>
+                <div class="stat-card">
+                  <h3 id="latihan-harian">0</h3>
+                  <p>Latihan Harian</p>
+                </div>
+                <div class="stat-card">
+                  <h3 id="latihan-mingguan">0</h3>
+                  <p>Latihan Mingguan</p>
+                </div>
+                <div class="stat-card">
+                  <h3 id="latihan-ujian">0</h3>
+                  <p>Ujian</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Materi Management Content -->
+            <div id="materi-content" style="display: none">
+              <div id="alert-container"></div>
+
+              <!-- Materi Content -->
+              <div class="row">
+                <!-- Main Content -->
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header d-flex align-items-center w-100">
+                      <h3 class="card-title m-0 text-black">Daftar Materi</h3>
+
+                      <!-- pakai ms-auto (BS5) ATAU ml-auto (BS4) -->
+                      <button
+                        type="button"
+                        class="btn btn-success btn-sm ms-auto ml-auto"
+                        id="openMateriBtn"
+                        onclick="toggleMateriForm()"
+                      >
+                        <i class="fas fa-plus"></i>
+                        <span class="d-none d-md-inline"
+                          >Tambah Materi Baru</span
+                        >
+                        <span class="d-md-none">Tambah</span>
+                      </button>
+                    </div>
+
+                    <div class="card-body">
+                      <!-- Form Section (initially hidden) -->
+                      <div id="materi-form-section" style="display: none">
+                        <div class="card">
+                          <div class="card-header">
+                            <h4>
+                              <i class="fas fa-book"></i> Form Tambah Materi
+                            </h4>
+                          </div>
+                          <div class="card-body">
+                            <form id="materi-form">
+                              <input type="hidden" id="materi-id" />
+
+                              <!-- Basic Info -->
+                              <div class="form-group">
+                                <label for="judul">Judul (Arab)</label>
+                                <input
+                                  type="text"
+                                  id="judul"
+                                  class="form-control"
+                                  required
+                                />
+                              </div>
+
+                              <div class="form-group">
+                                <label for="judul_latin">Judul (Latin)</label>
+                                <input
+                                  type="text"
+                                  id="judul_latin"
+                                  class="form-control"
+                                  required
+                                />
+                              </div>
+
+                              <div class="form-group">
+                                <label for="deskripsi">Deskripsi (Arab)</label>
+                                <textarea
+                                  id="deskripsi"
+                                  class="form-control"
+                                  rows="3"
+                                  required
+                                ></textarea>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="pengertian_awal"
+                                  >Pengertian Awal (Arab)</label
+                                >
+                                <textarea
+                                  id="pengertian_awal"
+                                  class="form-control"
+                                  rows="4"
+                                  required
+                                ></textarea>
+                              </div>
+
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="level">Level</label>
+                                    <select
+                                      id="level"
+                                      class="form-control"
+                                      required
+                                    >
+                                      <option value="Pemula">Pemula</option>
+                                      <option value="Menengah">Menengah</option>
+                                      <option value="Lanjutan">Lanjutan</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="jumlah_hukum"
+                                      >Jumlah Hukum</label
+                                    >
+                                    <input
+                                      type="number"
+                                      id="jumlah_hukum"
+                                      class="form-control"
+                                      min="1"
+                                      max="10"
+                                      value="5"
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="gambar_url">Upload Gambar</label>
+                                <div
+                                  class="file-upload-area"
+                                  onclick="document.getElementById('gambar_file').click()"
+                                >
+                                  <i class="fas fa-cloud-upload-alt"></i>
+                                  <p>Klik untuk memilih gambar</p>
+                                  <small style="color: #666"
+                                    >Format: JPG, PNG, GIF. Maksimal 5MB</small
+                                  >
+                                </div>
+                                <input
+                                  type="file"
+                                  id="gambar_file"
+                                  accept="image/*"
+                                  style="display: none"
+                                />
+                                <div
+                                  id="gambar_preview"
+                                  class="preview-container"
+                                  style="display: none"
+                                >
+                                  <img id="preview_image" />
+                                </div>
+                                <input type="hidden" id="gambar_url" />
+                              </div>
+
+                              <!-- Materi Inti Section -->
+                              <div class="form-group">
+                                <label>Materi Inti</label>
+                                <div style="margin-bottom: 1rem">
+                                  <button
+                                    type="button"
+                                    class="btn btn-primary btn-sm"
+                                    onclick="generateMateriInti()"
+                                  >
+                                    <i class="fas fa-magic"></i> Generate
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-secondary btn-sm"
+                                    onclick="addMateriIntiItem()"
+                                  >
+                                    <i class="fas fa-plus"></i> Tambah
+                                  </button>
+                                  <span
+                                    id="materi-inti-count"
+                                    class="count-badge"
+                                  ></span>
+                                </div>
+
+                                <div id="materi-inti-form" class="dynamic-form">
+                                  <!-- Hukum items will be added here dynamically -->
+                                </div>
+
+                                <textarea
+                                  id="materi_inti"
+                                  name="materi_inti"
+                                  style="display: none"
+                                  required
+                                ></textarea>
+                              </div>
+
+                              <!-- Latihan Praktis Section -->
+                              <div class="form-group">
+                                <label>Latihan Praktis</label>
+                                <div style="margin-bottom: 1rem">
+                                  <button
+                                    type="button"
+                                    class="btn btn-secondary btn-sm"
+                                    onclick="addLatihanPraktisItem()"
+                                  >
+                                    <i class="fas fa-plus"></i> Tambah Latihan
+                                  </button>
+                                  <span
+                                    id="latihan-praktis-count"
+                                    class="count-badge"
+                                  ></span>
+                                </div>
+
+                                <div
+                                  id="latihan-praktis-form"
+                                  class="dynamic-form"
+                                >
+                                  <!-- Latihan items will be added here dynamically -->
+                                </div>
+
+                                <textarea
+                                  id="latihan_praktis"
+                                  name="latihan_praktis"
+                                  style="display: none"
+                                  required
+                                ></textarea>
+                              </div>
+
+                              <div class="form-group">
+                                <button
+                                  type="submit"
+                                  class="btn btn-primary"
+                                  id="submit-btn"
+                                >
+                                  <i class="fas fa-save"></i> Tambah Materi
+                                </button>
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  id="cancel-btn"
+                                  onclick="toggleMateriForm()"
+                                  style="display: none"
+                                >
+                                  <i class="fas fa-times"></i> Batal
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- List Section -->
+                      <div id="materi-list-section">
+                        <div id="materi-list" class="materi-list">
+                          <div
+                            style="
+                              text-align: center;
+                              padding: 2rem;
+                              color: #6c757d;
+                            "
+                          >
+                            <i
+                              class="fas fa-spinner fa-spin"
+                              style="font-size: 2rem; margin-bottom: 1rem"
+                            ></i>
+                            <p>Loading...</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Latihan Management Content -->
+            <div id="latihan-content" style="display: none">
+              <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Manajemen Latihan</h3>
+                    </div>
+                    <div class="card-body">
+                      <!-- Category Tabs -->
+                      <ul class="nav nav-tabs" id="latihanTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                          <a
+                            class="nav-link active"
+                            id="harian-tab"
+                            data-toggle="tab"
+                            href="#harian-content"
+                            role="tab"
+                            aria-controls="harian-content"
+                            aria-selected="true"
+                          >
+                            <i class="fas fa-calendar-day"></i> Latihan Harian
+                          </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <a
+                            class="nav-link"
+                            id="mingguan-tab"
+                            data-toggle="tab"
+                            href="#mingguan-content"
+                            role="tab"
+                            aria-controls="mingguan-content"
+                            aria-selected="false"
+                          >
+                            <i class="fas fa-calendar-week"></i> Latihan
+                            Mingguan
+                          </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <a
+                            class="nav-link"
+                            id="ujian-tab"
+                            data-toggle="tab"
+                            href="#ujian-content"
+                            role="tab"
+                            aria-controls="ujian-content"
+                            aria-selected="false"
+                          >
+                            <i class="fas fa-graduation-cap"></i> Ujian
+                          </a>
+                        </li>
+                      </ul>
+
+                      <!-- Tab Content -->
+                      <div class="tab-content" id="latihanTabContent">
+                        <!-- Harian Content -->
+                        <div
+                          class="tab-pane fade show active"
+                          id="harian-content"
+                          role="tabpanel"
+                          aria-labelledby="harian-tab"
+                        >
+                          <div class="row mt-3">
+                            <div class="col-12">
+                              <div class="card">
+                                <div class="card-header">
+                                  <h5 class="card-title">Latihan Harian</h5>
+                                  <div class="card-tools">
+                                    <button
+                                      type="button"
+                                      class="btn btn-success btn-sm"
+                                      onclick="addSoal('harian')"
+                                    >
+                                      <i class="fas fa-plus"></i> Tambah Soal
+                                    </button>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <div id="harian-soal-list">
+                                    <!-- Soal list will be populated here -->
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Mingguan Content -->
+                        <div
+                          class="tab-pane fade"
+                          id="mingguan-content"
+                          role="tabpanel"
+                          aria-labelledby="mingguan-tab"
+                        >
+                          <div class="row mt-3">
+                            <div class="col-12">
+                              <div class="card">
+                                <div class="card-header">
+                                  <h5 class="card-title">Latihan Mingguan</h5>
+                                  <div class="card-tools">
+                                    <button
+                                      type="button"
+                                      class="btn btn-success btn-sm"
+                                      onclick="addSoal('mingguan')"
+                                    >
+                                      <i class="fas fa-plus"></i> Tambah Soal
+                                    </button>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <div id="mingguan-soal-list">
+                                    <!-- Soal list will be populated here -->
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Ujian Content -->
+                        <div
+                          class="tab-pane fade"
+                          id="ujian-content"
+                          role="tabpanel"
+                          aria-labelledby="ujian-tab"
+                        >
+                          <div class="row mt-3">
+                            <div class="col-12">
+                              <div class="card">
+                                <div class="card-header">
+                                  <h5 class="card-title">Ujian</h5>
+                                  <div class="card-tools">
+                                    <button
+                                      type="button"
+                                      class="btn btn-success btn-sm"
+                                      onclick="addSoal('ujian')"
+                                    >
+                                      <i class="fas fa-plus"></i> Tambah Soal
+                                    </button>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <div id="ujian-soal-list">
+                                    <!-- Soal list will be populated here -->
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Add Soal Modal -->
+              <div
+                class="modal fade"
+                id="addSoalModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="addSoalModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-xl" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addSoalModalLabel">
+                        Tambah Soal Baru
+                      </h5>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="addSoalForm">
+                        <input type="hidden" id="soalCategory" value="" />
+                        <div class="form-group">
+                          <label for="soalText">Pertanyaan</label>
+                          <textarea
+                            class="form-control"
+                            id="soalText"
+                            rows="3"
+                            required
+                          ></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label for="soalType">Tipe Soal</label>
+                          <select class="form-control" id="soalType" required>
+                            <option value="">Pilih Tipe</option>
+                            <option value="pilihan_ganda">Pilihan Ganda</option>
+                            <option value="essay">Essay</option>
+                          </select>
+                        </div>
+
+                        <!-- Pilihan Ganda Options -->
+                        <div id="pilihanGandaOptions" style="display: none">
+                          <div class="form-group">
+                            <label>Pilihan Jawaban</label>
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="input-group mb-2">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">A</span>
+                                  </div>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="optionA"
+                                    placeholder="Pilihan A"
+                                  />
+                                  <div class="input-group-append">
+                                    <div class="input-group-text">
+                                      <input
+                                        type="radio"
+                                        name="correctAnswer"
+                                        value="A"
+                                        id="correctA"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">B</span>
+                                  </div>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="optionB"
+                                    placeholder="Pilihan B"
+                                  />
+                                  <div class="input-group-append">
+                                    <div class="input-group-text">
+                                      <input
+                                        type="radio"
+                                        name="correctAnswer"
+                                        value="B"
+                                        id="correctB"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="input-group mb-2">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">C</span>
+                                  </div>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="optionC"
+                                    placeholder="Pilihan C"
+                                  />
+                                  <div class="input-group-append">
+                                    <div class="input-group-text">
+                                      <input
+                                        type="radio"
+                                        name="correctAnswer"
+                                        value="C"
+                                        id="correctC"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">D</span>
+                                  </div>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="optionD"
+                                    placeholder="Pilihan D"
+                                  />
+                                  <div class="input-group-append">
+                                    <div class="input-group-text">
+                                      <input
+                                        type="radio"
+                                        name="correctAnswer"
+                                        value="D"
+                                        id="correctD"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Essay Options -->
+                        <div id="essayOptions" style="display: none">
+                          <div class="form-group">
+                            <label for="correctEssayAnswer"
+                              >Jawaban Benar</label
+                            >
+                            <textarea
+                              class="form-control"
+                              id="correctEssayAnswer"
+                              rows="3"
+                              placeholder="Masukkan jawaban yang benar (bisa multi-line)"
+                            ></textarea>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="soalExplanation"
+                            >Penjelasan (Opsional)</label
+                          >
+                          <textarea
+                            class="form-control"
+                            id="soalExplanation"
+                            rows="2"
+                            placeholder="Penjelasan mengapa jawaban ini benar"
+                          ></textarea>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        Batal
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="saveSoal()"
+                      >
+                        Simpan Soal
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Footer -->
+      <footer class="main-footer">
+        <div class="float-right d-none d-sm-block"><b>Version</b> 1.0.0</div>
+        <strong>Copyright &copy; 2025 <a href="#">TajwidMaster</a>.</strong> All
+        rights reserved.
+      </footer>
+    </div>
+
+    <!-- Required JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
     <script>
+      // Your existing JavaScript code here
+
+      // Additional sidebar functionality
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Attach form event listeners
+        attachFormEventListeners();
+
+        // Handle menu item clicks with routing
+        const menuItems = document.querySelectorAll(".nav-sidebar .nav-link");
+        menuItems.forEach((item) => {
+          item.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // Remove active class from all menu items
+            menuItems.forEach((i) => i.classList.remove("active"));
+            this.classList.add("active");
+
+            // Get the menu type from id
+            const menuType = this.id;
+
+            // Hide all content sections
+            document.getElementById("dashboard-content").style.display = "none";
+            document.getElementById("materi-content").style.display = "none";
+            document.getElementById("latihan-content").style.display = "none";
+
+            // Show the appropriate content based on menu type
+            switch (menuType) {
+              case "dashboardLink":
+                document.getElementById("dashboard-content").style.display =
+                  "block";
+                document.getElementById("page-title").textContent = "Dashboard";
+                // Update stats when dashboard is shown
+                if (db) {
+                  updateStats();
+                }
+                break;
+              case "materiLink":
+                document.getElementById("materi-content").style.display =
+                  "block";
+                document.getElementById("page-title").textContent =
+                  "Manajemen Materi";
+                // Load materi list when switching to materi page
+                if (db) {
+                  loadMateriList();
+                }
+                break;
+              case "latihanLink":
+                document.getElementById("latihan-content").style.display =
+                  "block";
+                document.getElementById("page-title").textContent =
+                  "Manajemen Latihan";
+                // Load soal list when switching to latihan page
+                if (db) {
+                  setTimeout(() => {
+                    loadSoalList("harian");
+                  }, 100);
+                }
+                break;
+              default:
+                document.getElementById("dashboard-content").style.display =
+                  "block";
+                document.getElementById("page-title").textContent = "Dashboard";
+            }
+          });
+        });
+
+        // Handle logout
+        document
+          .getElementById("logoutButton")
+          .addEventListener("click", async function (e) {
+            e.preventDefault();
+            if (db && db.supabase) {
+              const { error } = await db.supabase.auth.signOut();
+              if (!error) {
+                window.location.href = "index.html";
+              }
+            } else {
+              window.location.href = "index.html";
+            }
+          });
+
+        // Initialize Supabase and database
+        const supabaseClient = await initializeSupabase();
+        if (supabaseClient) {
+          db = new AdminDatabase(supabaseClient);
+          console.log("Admin database initialized successfully");
+
+          // Load materi list only if database is initialized (but don't show it yet)
+          // loadMateriList(); // Will be loaded when user clicks on materi menu
+
+          // Add default items to forms (only if elements exist)
+          const materiIntiForm = document.getElementById("materi-inti-form");
+          const latihanPraktisForm = document.getElementById(
+            "latihan-praktis-form"
+          );
+          const materiIntiTextarea = document.getElementById("materi_inti");
+          const latihanPraktisTextarea =
+            document.getElementById("latihan_praktis");
+          const gambarFileInput = document.getElementById("gambar_file");
+
+          if (materiIntiForm && materiIntiForm.children.length === 0) {
+            addMateriIntiItem();
+          }
+          if (latihanPraktisForm && latihanPraktisForm.children.length === 0) {
+            addLatihanPraktisItem();
+          }
+
+          // Set default values for hidden textareas
+          if (materiIntiTextarea) {
+            materiIntiTextarea.value = "[]";
+          }
+          if (latihanPraktisTextarea) {
+            latihanPraktisTextarea.value = "[]";
+          }
+
+                  // Add file upload event listeners
+        if (gambarFileInput) {
+          gambarFileInput.addEventListener("change", function () {
+            handleImageUpload(this);
+          });
+        }
+        
+        // Add event listener to update required attributes based on edit mode
+        const materiForm = document.getElementById("materi-form");
+        if (materiForm) {
+          materiForm.addEventListener("input", function() {
+            updateRequiredAttributes();
+          });
+        }
+
+          // Load initial stats
+          updateStats();
+          
+          // Initialize required attributes
+          updateRequiredAttributes();
+        } else {
+          console.error("Failed to initialize Supabase client");
+          showAlert(
+            "Gagal menginisialisasi database. Silakan periksa konfigurasi.",
+            "error"
+          );
+        }
+      });
+
       // Wait for environment loader to be ready
       async function initializeSupabase() {
         console.log("Initializing Supabase...");
@@ -662,11 +1670,216 @@
             throw error;
           }
         }
+
+        // Soal Management Methods
+        async getAllSoal(category = null) {
+          try {
+            let query = this.supabase
+              .from("soal")
+              .select("*")
+              .order("created_at", { ascending: false });
+
+            if (category) {
+              query = query.eq("kategori", category);
+            }
+
+            const { data, error } = await query;
+            if (error) throw error;
+            return data;
+          } catch (error) {
+            console.error("Error fetching soal:", error);
+            return [];
+          }
+        }
+
+        async addSoal(soalData) {
+          try {
+            // Map the form data to database structure
+            const mappedData = {
+              kategori: soalData.category,
+              pertanyaan: soalData.question,
+              tipe_soal: soalData.type,
+              jawaban_benar: soalData.correct_answer,
+              pilihan_jawaban: soalData.options,
+              penjelasan: soalData.explanation,
+            };
+
+            const { data, error } = await this.supabase
+              .from("soal")
+              .insert([mappedData])
+              .select();
+
+            if (error) throw error;
+            return data[0];
+          } catch (error) {
+            console.error("Error adding soal:", error);
+            throw error;
+          }
+        }
+
+        async updateSoal(id, updateData) {
+          try {
+            // Map the form data to database structure
+            const mappedData = {
+              kategori: updateData.category,
+              pertanyaan: updateData.question,
+              tipe_soal: updateData.type,
+              jawaban_benar: updateData.correct_answer,
+              pilihan_jawaban: updateData.options,
+              penjelasan: updateData.explanation,
+              updated_at: new Date().toISOString(),
+            };
+
+            const { data, error } = await this.supabase
+              .from("soal")
+              .update(mappedData)
+              .eq("id", id)
+              .select();
+
+            if (error) throw error;
+            return data[0];
+          } catch (error) {
+            console.error("Error updating soal:", error);
+            throw error;
+          }
+        }
+
+        async deleteSoal(id) {
+          try {
+            const { error } = await this.supabase
+              .from("soal")
+              .delete()
+              .eq("id", id);
+
+            if (error) throw error;
+            return true;
+          } catch (error) {
+            console.error("Error deleting soal:", error);
+            throw error;
+          }
+        }
       }
 
+      // Global variables
       let db = null;
       let isEditing = false;
       let currentEditId = null;
+      let supabase = null;
+      let currentUser = null;
+
+      // Authentication functions
+      function showLoginForm() {
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('adminInterface').style.display = 'none';
+      }
+
+      function showAdminInterface() {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('adminInterface').style.display = 'block';
+      }
+
+      function showLoginAlert(message, type = 'error') {
+        const alertDiv = document.getElementById('loginAlert');
+        alertDiv.innerHTML = `
+          <div class="alert alert-${type === 'error' ? 'danger' : 'success'}">
+            ${message}
+          </div>
+        `;
+      }
+
+      async function handleLogin(email, password) {
+        try {
+          const spinner = document.getElementById('loginSpinner');
+          const loginBtn = document.querySelector('#loginForm button[type="submit"]');
+          
+          spinner.style.display = 'inline-block';
+          loginBtn.disabled = true;
+
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          // Save session to localStorage
+          localStorage.setItem('adminSession', JSON.stringify(data.session));
+          localStorage.setItem('adminUser', JSON.stringify(data.user));
+          
+          currentUser = data.user;
+          document.getElementById('userEmail').textContent = currentUser.email;
+          
+          showAdminInterface();
+          showLoginAlert('Login berhasil!', 'success');
+          
+          // Initialize the admin interface
+          await initializeAdminInterface();
+          
+        } catch (error) {
+          console.error('Login error:', error);
+          showLoginAlert(error.message || 'Login gagal. Periksa email dan password Anda.');
+        } finally {
+          const spinner = document.getElementById('loginSpinner');
+          const loginBtn = document.querySelector('#loginForm button[type="submit"]');
+          spinner.style.display = 'none';
+          loginBtn.disabled = false;
+        }
+      }
+
+      async function handleLogout() {
+        try {
+          await supabase.auth.signOut();
+          localStorage.removeItem('adminSession');
+          localStorage.removeItem('adminUser');
+          currentUser = null;
+          showLoginForm();
+        } catch (error) {
+          console.error('Logout error:', error);
+        }
+      }
+
+      async function checkAuthStatus() {
+        try {
+          // Check for existing session in localStorage
+          const savedSession = localStorage.getItem('adminSession');
+          const savedUser = localStorage.getItem('adminUser');
+          
+          if (savedSession && savedUser) {
+            const session = JSON.parse(savedSession);
+            const user = JSON.parse(savedUser);
+            
+            // Check if session is still valid
+            const { data, error } = await supabase.auth.getSession();
+            
+            if (data.session && !error) {
+              currentUser = user;
+              document.getElementById('userEmail').textContent = currentUser.email;
+              showAdminInterface();
+              return true;
+            } else {
+              // Session expired, clear localStorage
+              localStorage.removeItem('adminSession');
+              localStorage.removeItem('adminUser');
+            }
+          }
+          
+          return false;
+        } catch (error) {
+          console.error('Auth check error:', error);
+          return false;
+        }
+      }
+
+      async function initializeAdminInterface() {
+        // Initialize Supabase and database
+        supabase = await initializeSupabase();
+        if (supabase) {
+          db = new AdminDatabase(supabase);
+          updateStats();
+        }
+      }
 
       // UI Functions
       function showAlert(message, type = "success") {
@@ -733,10 +1946,10 @@
                             materi.pengertian_awal
                               ? "✓ Pengertian awal"
                               : "✗ Pengertian awal"
-                          } • 
+                          } •
                           ${
                             hukumCount > 0 ? "✓ Materi inti" : "✗ Materi inti"
-                          } • 
+                          } •
                           ${
                             latihanCount > 0
                               ? "✓ Latihan praktis"
@@ -749,11 +1962,6 @@
                           materi.id
                         }')">
                             <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteMateri('${
-                          materi.id
-                        }')">
-                            <i class="fas fa-trash"></i> Hapus
                         </button>
                     </div>
                 </div>
@@ -772,6 +1980,7 @@
         db.getAllMateri()
           .then((materiList) => {
             renderMateriList(materiList);
+            updateStats(); // Update stats after loading list
           })
           .catch((error) => {
             showAlert("Error loading materi: " + error.message, "error");
@@ -779,26 +1988,62 @@
       }
 
       function resetForm() {
+        // Reset the form
         document.getElementById("materi-form").reset();
+        
+        // Clear hidden fields
         document.getElementById("materi-id").value = "";
-        document.getElementById("form-title").textContent =
-          "Tambah Materi Baru";
+        document.getElementById("gambar_url").value = "";
+        
+        // Reset button states
         document.getElementById("submit-btn").textContent = "Tambah Materi";
         document.getElementById("cancel-btn").style.display = "none";
+        
+        // Reset editing state
         isEditing = false;
         currentEditId = null;
 
+        // Clear image preview
+        const preview = document.getElementById("gambar_preview");
+        if (preview) {
+          preview.style.display = "none";
+        }
+
         // Clear dynamic forms
-        document.getElementById("materi-inti-form").innerHTML = "";
-        document.getElementById("latihan-praktis-form").innerHTML = "";
+        const materiIntiForm = document.getElementById("materi-inti-form");
+        const latihanPraktisForm = document.getElementById(
+          "latihan-praktis-form"
+        );
+
+        if (materiIntiForm) {
+          materiIntiForm.innerHTML = "";
+        }
+        if (latihanPraktisForm) {
+          latihanPraktisForm.innerHTML = "";
+        }
 
         // Update counts
         updateMateriIntiCount();
         updateLatihanPraktisCount();
 
         // Set default values for hidden textareas
-        document.getElementById("materi_inti").value = "[]";
-        document.getElementById("latihan_praktis").value = "[]";
+        const materiIntiTextarea = document.getElementById("materi_inti");
+        const latihanPraktisTextarea =
+          document.getElementById("latihan_praktis");
+
+        if (materiIntiTextarea) {
+          materiIntiTextarea.value = "[]";
+        }
+        if (latihanPraktisTextarea) {
+          latihanPraktisTextarea.value = "[]";
+        }
+        
+        // Reset editing state
+        isEditing = false;
+        currentEditId = null;
+        
+        // Update required attributes for add mode
+        updateRequiredAttributes();
       }
 
       function editMateri(id) {
@@ -806,6 +2051,26 @@
         db.getAllMateri().then((materiList) => {
           const materi = materiList.find((m) => m.id === id);
           if (materi) {
+                                  // Set editing state
+            isEditing = true;
+            currentEditId = id;
+            
+            // Clear form first
+            document.getElementById("materi-form").reset();
+            document.getElementById("materi-id").value = "";
+            document.getElementById("gambar_url").value = "";
+            
+            // Clear image preview
+            const preview = document.getElementById("gambar_preview");
+            if (preview) {
+              preview.style.display = "none";
+            }
+            
+            // Clear dynamic forms
+            document.getElementById("materi-inti-form").innerHTML = "";
+            document.getElementById("latihan-praktis-form").innerHTML = "";
+            
+            // Populate form fields
             document.getElementById("materi-id").value = materi.id;
             document.getElementById("judul").value = materi.judul;
             document.getElementById("judul_latin").value =
@@ -814,13 +2079,21 @@
             document.getElementById("pengertian_awal").value =
               materi.pengertian_awal || "";
             document.getElementById("level").value = materi.level;
-            document.getElementById("gambar_url").value = materi.gambar_url;
+            document.getElementById("gambar_url").value = materi.gambar_url || "";
             document.getElementById("jumlah_hukum").value =
               materi.jumlah_hukum || 5;
 
-            // Clear existing dynamic forms
-            document.getElementById("materi-inti-form").innerHTML = "";
-            document.getElementById("latihan-praktis-form").innerHTML = "";
+            // Show existing image if available
+            if (materi.gambar_url && materi.gambar_url.trim() !== "") {
+              const preview = document.getElementById("gambar_preview");
+              const previewImg = document.getElementById("preview_image");
+              if (preview && previewImg) {
+                previewImg.src = materi.gambar_url;
+                preview.style.display = "block";
+              }
+            }
+
+
 
             // Handle Materi Inti
             if (materi.materi_inti) {
@@ -857,18 +2130,23 @@
                 console.error("Error parsing latihan_praktis:", error);
               }
             }
-
+            
             // Update counts
             updateMateriIntiCount();
             updateLatihanPraktisCount();
 
-            document.getElementById("form-title").textContent = "Edit Materi";
+            // Update button text and show cancel button
             document.getElementById("submit-btn").textContent = "Update Materi";
-            document.getElementById("cancel-btn").style.display =
-              "inline-block";
-
-            isEditing = true;
-            currentEditId = id;
+            document.getElementById("cancel-btn").style.display = "inline-block";
+            
+            // Show form section first
+            toggleMateriForm();
+            
+            // Update audio previews and required attributes after form is shown
+            setTimeout(() => {
+              updateAudioPreviews();
+              updateRequiredAttributes();
+            }, 100);
           }
         });
       }
@@ -879,38 +2157,55 @@
             await db.deleteMateri(id);
             showAlert("Materi berhasil dihapus");
             loadMateriList();
+            updateStats(); // Update dashboard stats
           } catch (error) {
             showAlert("Error deleting materi: " + error.message, "error");
           }
         }
       }
 
-      // Event Listeners
-      document
-        .getElementById("materi-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
+      // Event Listeners - These will be attached after sidebar is loaded
+      function attachFormEventListeners() {
+        const materiForm = document.getElementById("materi-form");
+        const cancelBtn = document.getElementById("cancel-btn");
+        const materiIntiForm = document.getElementById("materi-inti-form");
+        const latihanPraktisForm = document.getElementById(
+          "latihan-praktis-form"
+        );
 
-          // Use the new file upload submission function
-          await submitFormWithFiles();
-        });
+        if (materiForm) {
+          materiForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            // Use the new file upload submission function
+            await submitFormWithFiles();
+          });
+        }
 
-      document
-        .getElementById("cancel-btn")
-        .addEventListener("click", resetForm);
+        if (cancelBtn) {
+          cancelBtn.addEventListener("click", function() {
+            if (isEditing) {
+              // If editing, just close form
+              toggleMateriForm();
+            } else {
+              // If adding new, reset form
+              resetForm();
+            }
+          });
+        }
 
-      // Add real-time count updates
-      document
-        .getElementById("materi-inti-form")
-        .addEventListener("input", function () {
-          updateMateriIntiCount();
-        });
+        // Add real-time count updates
+        if (materiIntiForm) {
+          materiIntiForm.addEventListener("input", function () {
+            updateMateriIntiCount();
+          });
+        }
 
-      document
-        .getElementById("latihan-praktis-form")
-        .addEventListener("input", function () {
-          updateLatihanPraktisCount();
-        });
+        if (latihanPraktisForm) {
+          latihanPraktisForm.addEventListener("input", function () {
+            updateLatihanPraktisCount();
+          });
+        }
+      }
 
       // Materi Inti Management Functions
       function generateMateriInti() {
@@ -945,6 +2240,9 @@
           `Generated ${jumlahHukum} hukum untuk materi inti`,
           "success"
         );
+        
+        // Update required attributes
+        updateRequiredAttributes();
       }
 
       function addMateriIntiItem() {
@@ -994,6 +2292,9 @@
         document.getElementById("materi_inti").value =
           JSON.stringify(materiIntiArray);
         showAlert("Hukum baru ditambahkan", "success");
+        
+        // Update required attributes
+        updateRequiredAttributes();
       }
 
       function addMateriIntiFormItem(data = {}) {
@@ -1009,7 +2310,7 @@
           <div class="item-header">
             <span class="item-title">Hukum ${data.id || "Baru"}</span>
           </div>
-          
+
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div>
               <label>Judul (Arab)</label>
@@ -1024,12 +2325,12 @@
               }" required>
             </div>
           </div>
-          
+
           <label>Deskripsi (Arab)</label>
           <textarea class="form-control" name="deskripsi" rows="3" required>${
             data.deskripsi || ""
           }</textarea>
-          
+
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div>
               <label>Contoh Ayat (Arab)</label>
@@ -1044,22 +2345,24 @@
               }" required>
             </div>
           </div>
-          
+
           <label>Upload Audio</label>
-          <input type="file" class="form-control" name="audio_file" accept="audio/*" required>
+          <input type="file" class="form-control" name="audio_file" accept="audio/*" ${!data.audio_url ? 'required' : ''}>
           <small style="color: #666; display: block; margin-top: 5px;">
             Format: MP3, WAV, OGG. Maksimal 10MB
           </small>
-          <div class="audio_preview" style="margin-top: 10px; display: none;">
+          <div class="audio_preview" style="margin-top: 10px; display: ${
+            data.audio_url ? 'block' : 'none'
+          };">
             <audio controls style="width: 100%; max-width: 300px;">
-              <source id="preview_audio" src="" type="audio/mpeg">
+              <source id="preview_audio" src="${data.audio_url || ''}" type="audio/mpeg">
               Browser tidak mendukung audio
             </audio>
           </div>
           <input type="hidden" name="audio_url" value="${
             data.audio_url || ""
           }" />
-          
+
           <div class="tips-section">
             <h5><i class="fas fa-lightbulb"></i> Tips</h5>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
@@ -1090,6 +2393,9 @@
             handleAudioUpload(this);
           });
         }
+        
+        // Update required attributes after adding item
+        updateRequiredAttributes();
       }
 
       function removeMateriIntiItem(button) {
@@ -1125,6 +2431,9 @@
           document.getElementById("materi_inti").value =
             JSON.stringify(materiIntiArray);
           showAlert("Hukum berhasil dihapus", "success");
+          
+          // Update required attributes
+          updateRequiredAttributes();
         }
       }
 
@@ -1134,7 +2443,12 @@
         const formGroups = formContainer.querySelectorAll(".form-group");
 
         countSpan.textContent = `${formGroups.length} hukum`;
-        countSpan.style.color = formGroups.length > 0 ? "#28a745" : "#dc3545";
+        countSpan.classList.remove("success", "danger");
+        if (formGroups.length > 0) {
+          countSpan.classList.add("success");
+        } else {
+          countSpan.classList.add("danger");
+        }
       }
 
       // Convert form data to JSON
@@ -1205,6 +2519,9 @@
         document.getElementById("latihan_praktis").value =
           JSON.stringify(latihanArray);
         showAlert("Latihan baru ditambahkan", "success");
+        
+        // Update required attributes
+        updateRequiredAttributes();
       }
 
       function addLatihanPraktisFormItem(data = {}) {
@@ -1220,17 +2537,17 @@
           <div class="item-header">
             <span class="item-title">Latihan ${data.id || "Baru"}</span>
           </div>
-          
+
           <label>Judul Latihan</label>
           <input type="text" class="form-control" name="judul" value="${
             data.judul || ""
           }" required>
-          
+
           <label>Deskripsi</label>
           <textarea class="form-control" name="deskripsi" rows="3" required>${
             data.deskripsi || ""
           }</textarea>
-          
+
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div>
               <label>Contoh Ayat (Arab)</label>
@@ -1245,27 +2562,29 @@
               }" required>
             </div>
           </div>
-          
+
           <label>Upload Audio</label>
-          <input type="file" class="form-control" name="audio_file" accept="audio/*" required>
+          <input type="file" class="form-control" name="audio_file" accept="audio/*" ${!data.audio_url ? 'required' : ''}>
           <small style="color: #666; display: block; margin-top: 5px;">
             Format: MP3, WAV, OGG. Maksimal 10MB
           </small>
-          <div class="audio_preview" style="margin-top: 10px; display: none;">
+          <div class="audio_preview" style="margin-top: 10px; display: ${
+            data.audio_url ? 'block' : 'none'
+          };">
             <audio controls style="width: 100%; max-width: 300px;">
-              <source id="preview_audio" src="" type="audio/mpeg">
+              <source id="preview_audio" src="${data.audio_url || ''}" type="audio/mpeg">
               Browser tidak mendukung audio
             </audio>
           </div>
           <input type="hidden" name="audio_url" value="${
             data.audio_url || ""
           }" />
-          
+
           <label>Jawaban</label>
           <textarea class="form-control" name="jawaban" rows="3" required>${
             data.jawaban || ""
           }</textarea>
-          
+
           <label>Penjelasan</label>
           <textarea class="form-control" name="penjelasan" rows="3">${
             data.penjelasan || ""
@@ -1283,6 +2602,9 @@
             handleAudioUpload(this);
           });
         }
+        
+        // Update required attributes after adding item
+        updateRequiredAttributes();
       }
 
       function removeLatihanPraktisItem(button) {
@@ -1312,6 +2634,9 @@
           document.getElementById("latihan_praktis").value =
             JSON.stringify(latihanArray);
           showAlert("Latihan berhasil dihapus", "success");
+          
+          // Update required attributes
+          updateRequiredAttributes();
         }
       }
 
@@ -1321,7 +2646,12 @@
         const formGroups = formContainer.querySelectorAll(".form-group");
 
         countSpan.textContent = `${formGroups.length} latihan`;
-        countSpan.style.color = formGroups.length > 0 ? "#28a745" : "#dc3545";
+        countSpan.classList.remove("success", "danger");
+        if (formGroups.length > 0) {
+          countSpan.classList.add("success");
+        } else {
+          countSpan.classList.add("danger");
+        }
       }
 
       // Convert form data to JSON
@@ -1382,6 +2712,9 @@
         const extension = file.name.split(".").pop();
         const filename = `gambar_${timestamp}.${extension}`;
         // URL will be updated after upload to Supabase Storage
+        
+        // Update required attributes
+        updateRequiredAttributes();
       }
 
       function handleAudioUpload(input) {
@@ -1419,6 +2752,9 @@
         const extension = file.name.split(".").pop();
         const filename = `audio_${timestamp}.${extension}`;
         // URL will be updated after upload to Supabase Storage
+        
+        // Update required attributes
+        updateRequiredAttributes();
       }
 
       // Enhanced form submission with file uploads
@@ -1529,7 +2865,7 @@
           const imageFile = uploadedFiles.find(
             (f) => f.field === "gambar_file"
           );
-          if (imageFile) {
+          if (imageFile && imageFile.filename !== 'existing') {
             gambarUrl = imageFile.url;
           }
 
@@ -1538,7 +2874,7 @@
             const audioFile = uploadedFiles.find(
               (f) => f.field === `materi_inti_audio_${index}`
             );
-            if (audioFile) {
+            if (audioFile && audioFile.filename !== 'existing') {
               item.audio_url = audioFile.url;
             }
           });
@@ -1548,7 +2884,7 @@
             const audioFile = uploadedFiles.find(
               (f) => f.field === `latihan_audio_${index}`
             );
-            if (audioFile) {
+            if (audioFile && audioFile.filename !== 'existing') {
               item.audio_url = audioFile.url;
             }
           });
@@ -1574,8 +2910,11 @@
             showAlert("Materi berhasil ditambahkan!", "success");
           }
 
+          // Reset form and close it
           resetForm();
           loadMateriList();
+          updateStats(); // Update dashboard stats
+          toggleMateriForm(); // Close form after successful submission
         } catch (error) {
           console.error("Error submitting form:", error);
           showAlert("Terjadi kesalahan saat menyimpan materi.", "error");
@@ -1588,6 +2927,8 @@
 
           // Upload main image file
           const imageFile = document.getElementById("gambar_file").files[0];
+          const existingImageUrl = document.getElementById("gambar_url").value;
+          
           if (imageFile) {
             const timestamp = Date.now();
             const extension = imageFile.name.split(".").pop();
@@ -1612,6 +2953,13 @@
               filename: filename,
               url: imageUrl.publicUrl,
             });
+          } else if (existingImageUrl) {
+            // Keep existing image URL if no new file is uploaded
+            uploadedFiles.push({
+              field: "gambar_file",
+              filename: 'existing',
+              url: existingImageUrl,
+            });
           }
 
           // Upload audio files from materi inti
@@ -1623,6 +2971,10 @@
             const audioFile = materiIntiItems[i].querySelector(
               'input[name="audio_file"]'
             ).files[0];
+            const existingAudioUrl = materiIntiItems[i].querySelector(
+              'input[name="audio_url"]'
+            ).value;
+            
             if (audioFile) {
               const timestamp = Date.now() + i;
               const extension = audioFile.name.split(".").pop();
@@ -1647,6 +2999,13 @@
                 filename: filename,
                 url: audioUrl.publicUrl,
               });
+            } else if (existingAudioUrl) {
+              // Keep existing audio URL if no new file is uploaded
+              uploadedFiles.push({
+                field: `materi_inti_audio_${i}`,
+                filename: 'existing',
+                url: existingAudioUrl,
+              });
             }
           }
 
@@ -1661,6 +3020,10 @@
             const audioFile = latihanPraktisItems[i].querySelector(
               'input[name="audio_file"]'
             ).files[0];
+            const existingAudioUrl = latihanPraktisItems[i].querySelector(
+              'input[name="audio_url"]'
+            ).value;
+            
             if (audioFile) {
               const timestamp = Date.now() + i + 1000;
               const extension = audioFile.name.split(".").pop();
@@ -1685,6 +3048,13 @@
                 filename: filename,
                 url: audioUrl.publicUrl,
               });
+            } else if (existingAudioUrl) {
+              // Keep existing audio URL if no new file is uploaded
+              uploadedFiles.push({
+                field: `latihan_audio_${i}`,
+                filename: 'existing',
+                url: existingAudioUrl,
+              });
             }
           }
 
@@ -1696,39 +3066,660 @@
         }
       }
 
-      // Initialize
-      document.addEventListener("DOMContentLoaded", async () => {
-        // Initialize Supabase and database
-        const supabaseClient = await initializeSupabase();
-        if (supabaseClient) {
-          db = new AdminDatabase(supabaseClient);
-          console.log("Admin database initialized successfully");
+      // Function to update audio previews
+      function updateAudioPreviews() {
+        // Update materi inti audio previews
+        const materiIntiItems = document.querySelectorAll("#materi-inti-form .form-group");
+        materiIntiItems.forEach(item => {
+          const audioUrl = item.querySelector('input[name="audio_url"]');
+          const audioPreview = item.querySelector('.audio_preview');
+          const audioSource = item.querySelector('.audio_preview audio source');
+          
+          if (audioUrl && audioUrl.value && audioPreview && audioSource) {
+            audioSource.src = audioUrl.value;
+            audioPreview.style.display = 'block';
+          }
+        });
+        
+        // Update latihan praktis audio previews
+        const latihanItems = document.querySelectorAll("#latihan-praktis-form .form-group");
+        latihanItems.forEach(item => {
+          const audioUrl = item.querySelector('input[name="audio_url"]');
+          const audioPreview = item.querySelector('.audio_preview');
+          const audioSource = item.querySelector('.audio_preview audio source');
+          
+          if (audioUrl && audioUrl.value && audioPreview && audioSource) {
+            audioSource.src = audioUrl.value;
+            audioPreview.style.display = 'block';
+          }
+        });
+      }
 
-          // Load materi list only if database is initialized
-          loadMateriList();
+      // Function to update required attributes based on edit mode
+      function updateRequiredAttributes() {
+        const gambarFile = document.getElementById("gambar_file");
+        const existingImageUrl = document.getElementById("gambar_url").value;
+        
+        // Set required for image only if not editing or no existing image
+        if (gambarFile) {
+          if (isEditing && existingImageUrl) {
+            gambarFile.removeAttribute("required");
+          } else {
+            gambarFile.setAttribute("required", "");
+          }
+        }
+        
+        // Update audio file requirements in dynamic forms
+        const materiIntiItems = document.querySelectorAll("#materi-inti-form .form-group");
+        materiIntiItems.forEach(item => {
+          const audioFile = item.querySelector('input[name="audio_file"]');
+          const audioUrl = item.querySelector('input[name="audio_url"]');
+          
+          if (audioFile && audioUrl) {
+            if (isEditing && audioUrl.value) {
+              audioFile.removeAttribute("required");
+            } else {
+              audioFile.setAttribute("required", "");
+            }
+          }
+        });
+        
+        const latihanItems = document.querySelectorAll("#latihan-praktis-form .form-group");
+        latihanItems.forEach(item => {
+          const audioFile = item.querySelector('input[name="audio_file"]');
+          const audioUrl = item.querySelector('input[name="audio_url"]');
+          
+          if (audioFile && audioUrl) {
+            if (isEditing && audioUrl.value) {
+              audioFile.removeAttribute("required");
+            } else {
+              audioFile.setAttribute("required", "");
+            }
+          }
+        });
+      }
 
-          // Add default items to forms
-          addMateriIntiItem();
-          addLatihanPraktisItem();
+      // Function to update stats
+      function updateStats() {
+        const totalMateri = document.getElementById("total-materi");
+        const materiPemula = document.getElementById("materi-pemula");
+        const materiMenengah = document.getElementById("materi-menengah");
+        const materiLanjutan = document.getElementById("materi-lanjutan");
+        const totalLatihan = document.getElementById("total-latihan");
+        const latihanHarian = document.getElementById("latihan-harian");
+        const latihanMingguan = document.getElementById("latihan-mingguan");
+        const latihanUjian = document.getElementById("latihan-ujian");
 
-          // Set default values for hidden textareas
-          document.getElementById("materi_inti").value = "[]";
-          document.getElementById("latihan_praktis").value = "[]";
+        // Update materi stats
+        db.getAllMateri().then((materiList) => {
+          totalMateri.textContent = materiList.length;
+          materiPemula.textContent = materiList.filter(
+            (m) => m.level === "Pemula"
+          ).length;
+          materiMenengah.textContent = materiList.filter(
+            (m) => m.level === "Menengah"
+          ).length;
+          materiLanjutan.textContent = materiList.filter(
+            (m) => m.level === "Lanjutan"
+          ).length;
+        });
 
-          // Add file upload event listeners
-          document
-            .getElementById("gambar_file")
-            .addEventListener("change", function () {
-              handleImageUpload(this);
-            });
+        // Update latihan stats
+        db.getAllSoal().then((soalList) => {
+          totalLatihan.textContent = soalList.length;
+          latihanHarian.textContent = soalList.filter(
+            (s) => s.kategori === "harian"
+          ).length;
+          latihanMingguan.textContent = soalList.filter(
+            (s) => s.kategori === "mingguan"
+          ).length;
+          latihanUjian.textContent = soalList.filter(
+            (s) => s.kategori === "ujian"
+          ).length;
+        });
+      }
+
+      function toggleMateriForm() {
+        const formSection = document.getElementById("materi-form-section");
+        const listSection = document.getElementById("materi-list-section");
+        const openBtn = document.getElementById("openMateriBtn");
+        const cancelBtn = document.getElementById("cancel-btn");
+
+        if (formSection.style.display === "none") {
+          formSection.style.display = "block";
+          listSection.style.display = "none";
+          openBtn.innerHTML = '<i class="fas fa-times"></i> Tutup Form';
+          openBtn.classList.remove("btn-primary");
+          openBtn.classList.add("btn-danger");
+          cancelBtn.style.display = "inline-block";
+          
+          // Update required attributes when opening form for add mode
+          if (!isEditing) {
+            updateRequiredAttributes();
+          }
         } else {
-          console.error("Failed to initialize Supabase client");
-          showAlert(
-            "Gagal menginisialisasi database. Silakan periksa konfigurasi.",
-            "error"
-          );
+          formSection.style.display = "none";
+          listSection.style.display = "block";
+          openBtn.innerHTML = '<i class="fas fa-plus"></i> Tambah Materi Baru';
+          openBtn.classList.remove("btn-danger");
+          openBtn.classList.add("btn-primary");
+          cancelBtn.style.display = "none";
+          
+          // Only reset form if not in editing mode
+          if (!isEditing) {
+            resetForm();
+          } else {
+            // Reset editing state when closing form in edit mode
+            isEditing = false;
+            currentEditId = null;
+          }
+        }
+      }
+
+      // ===== LATIHAN MANAGEMENT FUNCTIONS =====
+
+      // Show add soal form modal
+      function addSoal(category) {
+        document.getElementById("soalCategory").value = category;
+        document.getElementById(
+          "addSoalModalLabel"
+        ).textContent = `Tambah Soal - ${getCategoryName(category)}`;
+        $("#addSoalModal").modal("show");
+      }
+
+      // Get category display name
+      function getCategoryName(category) {
+        const names = {
+          harian: "Latihan Harian",
+          mingguan: "Latihan Mingguan",
+          ujian: "Ujian",
+        };
+        return names[category] || category;
+      }
+
+      // Handle soal type change
+      document.addEventListener("DOMContentLoaded", function () {
+        const soalTypeSelect = document.getElementById("soalType");
+        if (soalTypeSelect) {
+          soalTypeSelect.addEventListener("change", function () {
+            const selectedType = this.value;
+
+            // Hide all option sections
+            document.getElementById("pilihanGandaOptions").style.display =
+              "none";
+            document.getElementById("essayOptions").style.display = "none";
+
+            // Show relevant section
+            if (selectedType === "pilihan_ganda") {
+              document.getElementById("pilihanGandaOptions").style.display =
+                "block";
+            } else if (selectedType === "essay") {
+              document.getElementById("essayOptions").style.display = "block";
+            }
+          });
         }
       });
+
+      // Save soal
+      async function saveSoal() {
+        // Check if database is initialized
+        if (!db) {
+          showAlert(
+            "Database belum diinisialisasi. Silakan refresh halaman.",
+            "error"
+          );
+          return;
+        }
+
+        const category = document.getElementById("soalCategory").value;
+        const soalText = document.getElementById("soalText").value;
+        const soalType = document.getElementById("soalType").value;
+        const explanation = document.getElementById("soalExplanation").value;
+
+        if (!soalText || !soalType) {
+          showAlert("Pertanyaan dan tipe soal harus diisi!", "error");
+          return;
+        }
+
+        let correctAnswer = "";
+        let options = {};
+
+        // Get correct answer based on soal type
+        if (soalType === "pilihan_ganda") {
+          const selectedAnswer = document.querySelector(
+            'input[name="correctAnswer"]:checked'
+          );
+          if (!selectedAnswer) {
+            showAlert("Pilih jawaban yang benar!", "error");
+            return;
+          }
+          correctAnswer = selectedAnswer.value;
+
+          // Get all options
+          options = {
+            A: document.getElementById("optionA").value,
+            B: document.getElementById("optionB").value,
+            C: document.getElementById("optionC").value,
+            D: document.getElementById("optionD").value,
+          };
+
+          // Validate that all options are filled
+          if (!options.A || !options.B || !options.C || !options.D) {
+            showAlert("Semua pilihan jawaban harus diisi!", "error");
+            return;
+          }
+        } else if (soalType === "essay") {
+          correctAnswer = document.getElementById("correctEssayAnswer").value;
+          if (!correctAnswer) {
+            showAlert("Masukkan jawaban yang benar!", "error");
+            return;
+          }
+        }
+
+        try {
+          const soalData = {
+            category: category,
+            question: soalText,
+            type: soalType,
+            correct_answer: correctAnswer,
+            options: options,
+            explanation: explanation,
+            created_at: new Date().toISOString(),
+          };
+
+          // Save to database
+          await db.addSoal(soalData);
+
+          $("#addSoalModal").modal("hide");
+          showAlert("Soal berhasil ditambahkan!", "success");
+
+          // Reset form
+          document.getElementById("addSoalForm").reset();
+          document.getElementById("pilihanGandaOptions").style.display = "none";
+          document.getElementById("essayOptions").style.display = "none";
+
+          // Reload soal list
+          loadSoalList(category);
+          updateStats(); // Update dashboard stats
+        } catch (error) {
+          console.error("Error saving soal:", error);
+          showAlert("Gagal menyimpan soal: " + error.message, "error");
+        }
+      }
+
+      // Load soal list for a category
+      async function loadSoalList(category) {
+        const container = document.getElementById(`${category}-soal-list`);
+        if (!container) return;
+
+        // Check if database is initialized
+        if (!db) {
+          container.innerHTML = `
+            <div class="alert alert-warning">
+              <i class="fas fa-exclamation-triangle"></i>
+              Database belum diinisialisasi. Silakan refresh halaman.
+            </div>
+          `;
+          return;
+        }
+
+        try {
+          // Show loading
+          container.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: #6c757d;">
+              <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+              <p>Loading soal...</p>
+            </div>
+          `;
+
+          // Fetch soal from database
+          const soalList = await db.getAllSoal(category);
+
+          if (soalList.length === 0) {
+            container.innerHTML = `
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Belum ada soal untuk ${getCategoryName(
+                  category
+                )}. Silakan tambah soal baru.
+              </div>
+            `;
+            return;
+          }
+
+          // Render soal list
+          container.innerHTML = soalList
+            .map((soal, index) => {
+              const optionsHtml =
+                soal.tipe_soal === "pilihan_ganda" && soal.pilihan_jawaban
+                  ? Object.entries(soal.pilihan_jawaban)
+                      .map(
+                        ([key, value]) =>
+                          `<div class="mb-1">
+                    <strong>${key}.</strong> ${value}
+                    ${
+                      key === soal.jawaban_benar
+                        ? ' <i class="fas fa-check text-success"></i>'
+                        : ""
+                    }
+                  </div>`
+                      )
+                      .join("")
+                  : "";
+
+              return `
+              <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between  align-items-center">
+                  <h6 class="mb-0">Soal #${index + 1}</h6>
+                             <div class="d-flex gap-5">
+             <button class="btn btn-sm btn-primary" onclick="editSoal('${
+               soal.id
+             }')">
+               <i class="fas fa-edit"></i> Edit
+             </button>
+             <button class="btn btn-sm btn-danger" onclick="deleteSoal('${
+               soal.id
+             }', '${category}')">
+               <i class="fas fa-trash"></i> Hapus
+             </button>
+           </div>
+                </div>
+                <div class="card-body">
+                  <div class="mb-2">
+                    <strong>Pertanyaan:</strong><br>
+                    ${soal.pertanyaan}
+                  </div>
+                  <div class="mb-2">
+                    <strong>Tipe:</strong> ${
+                      soal.tipe_soal === "pilihan_ganda"
+                        ? "Pilihan Ganda"
+                        : "Essay"
+                    }
+                  </div>
+                  ${
+                    soal.tipe_soal === "pilihan_ganda"
+                      ? `
+                    <div class="mb-2">
+                      <strong>Pilihan Jawaban:</strong><br>
+                      ${optionsHtml}
+                    </div>
+                  `
+                      : `
+                    <div class="mb-2">
+                      <strong>Jawaban Benar:</strong><br>
+                      ${soal.jawaban_benar}
+                    </div>
+                  `
+                  }
+                  ${
+                    soal.penjelasan
+                      ? `
+                    <div class="mb-2">
+                      <strong>Penjelasan:</strong><br>
+                      ${soal.penjelasan}
+                    </div>
+                  `
+                      : ""
+                  }
+                  <small class="text-muted">
+                    Dibuat: ${new Date(soal.created_at).toLocaleDateString(
+                      "id-ID"
+                    )}
+                  </small>
+                </div>
+              </div>
+            `;
+            })
+            .join("");
+        } catch (error) {
+          console.error("Error loading soal:", error);
+          container.innerHTML = `
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle"></i>
+              Gagal memuat soal: ${error.message}
+            </div>
+          `;
+        }
+      }
+
+      // Edit soal
+      async function editSoal(id) {
+        // Check if database is initialized
+        if (!db) {
+          showAlert(
+            "Database belum diinisialisasi. Silakan refresh halaman.",
+            "error"
+          );
+          return;
+        }
+
+        try {
+          const soalList = await db.getAllSoal();
+          const soal = soalList.find((s) => s.id === id);
+
+          if (!soal) {
+            showAlert("Soal tidak ditemukan!", "error");
+            return;
+          }
+
+          // Populate form with soal data
+          document.getElementById("soalCategory").value = soal.kategori;
+          document.getElementById("soalText").value = soal.pertanyaan;
+          document.getElementById("soalType").value = soal.tipe_soal;
+          document.getElementById("soalExplanation").value =
+            soal.penjelasan || "";
+
+          // Handle soal type change
+          const soalTypeSelect = document.getElementById("soalType");
+          soalTypeSelect.dispatchEvent(new Event("change"));
+
+          // Populate options based on type
+          if (soal.tipe_soal === "pilihan_ganda" && soal.pilihan_jawaban) {
+            document.getElementById("optionA").value =
+              soal.pilihan_jawaban.A || "";
+            document.getElementById("optionB").value =
+              soal.pilihan_jawaban.B || "";
+            document.getElementById("optionC").value =
+              soal.pilihan_jawaban.C || "";
+            document.getElementById("optionD").value =
+              soal.pilihan_jawaban.D || "";
+
+            // Set correct answer
+            const correctRadio = document.getElementById(
+              `correct${soal.jawaban_benar}`
+            );
+            if (correctRadio) correctRadio.checked = true;
+          } else if (soal.tipe_soal === "essay") {
+            document.getElementById("correctEssayAnswer").value =
+              soal.jawaban_benar || "";
+          }
+
+          // Update modal title and button
+          document.getElementById(
+            "addSoalModalLabel"
+          ).textContent = `Edit Soal - ${getCategoryName(soal.kategori)}`;
+          document.querySelector(
+            "#addSoalModal .modal-footer .btn-primary"
+          ).textContent = "Update Soal";
+          document.querySelector(
+            "#addSoalModal .modal-footer .btn-primary"
+          ).onclick = () => updateSoal(id);
+
+          $("#addSoalModal").modal("show");
+        } catch (error) {
+          console.error("Error editing soal:", error);
+          showAlert("Gagal memuat data soal!", "error");
+        }
+      }
+
+      // Update soal
+      async function updateSoal(id) {
+        const category = document.getElementById("soalCategory").value;
+        const soalText = document.getElementById("soalText").value;
+        const soalType = document.getElementById("soalType").value;
+        const explanation = document.getElementById("soalExplanation").value;
+
+        if (!soalText || !soalType) {
+          showAlert("Pertanyaan dan tipe soal harus diisi!", "error");
+          return;
+        }
+
+        let correctAnswer = "";
+        let options = {};
+
+        // Get correct answer based on soal type
+        if (soalType === "pilihan_ganda") {
+          const selectedAnswer = document.querySelector(
+            'input[name="correctAnswer"]:checked'
+          );
+          if (!selectedAnswer) {
+            showAlert("Pilih jawaban yang benar!", "error");
+            return;
+          }
+          correctAnswer = selectedAnswer.value;
+
+          // Get all options
+          options = {
+            A: document.getElementById("optionA").value,
+            B: document.getElementById("optionB").value,
+            C: document.getElementById("optionC").value,
+            D: document.getElementById("optionD").value,
+          };
+
+          // Validate that all options are filled
+          if (!options.A || !options.B || !options.C || !options.D) {
+            showAlert("Semua pilihan jawaban harus diisi!", "error");
+            return;
+          }
+        } else if (soalType === "essay") {
+          correctAnswer = document.getElementById("correctEssayAnswer").value;
+          if (!correctAnswer) {
+            showAlert("Masukkan jawaban yang benar!", "error");
+            return;
+          }
+        }
+
+        try {
+          const updateData = {
+            category: category,
+            question: soalText,
+            type: soalType,
+            correct_answer: correctAnswer,
+            options: options,
+            explanation: explanation,
+            updated_at: new Date().toISOString(),
+          };
+
+          // Update in database
+          await db.updateSoal(id, updateData);
+
+          $("#addSoalModal").modal("hide");
+          showAlert("Soal berhasil diperbarui!", "success");
+
+          // Reset form and button
+          document.getElementById("addSoalForm").reset();
+          document.getElementById("pilihanGandaOptions").style.display = "none";
+          document.getElementById("essayOptions").style.display = "none";
+          document.getElementById("addSoalModalLabel").textContent =
+            "Tambah Soal Baru";
+          document.querySelector(
+            "#addSoalModal .modal-footer .btn-primary"
+          ).textContent = "Simpan Soal";
+          document.querySelector(
+            "#addSoalModal .modal-footer .btn-primary"
+          ).onclick = saveSoal;
+
+          // Reload soal list
+          loadSoalList(category);
+          updateStats(); // Update dashboard stats
+        } catch (error) {
+          console.error("Error updating soal:", error);
+          showAlert("Gagal memperbarui soal: " + error.message, "error");
+        }
+      }
+
+      // Delete soal
+      async function deleteSoal(id, category) {
+        if (confirm("Apakah Anda yakin ingin menghapus soal ini?")) {
+          try {
+            await db.deleteSoal(id);
+            showAlert("Soal berhasil dihapus!", "success");
+            loadSoalList(category);
+            updateStats(); // Update dashboard stats
+          } catch (error) {
+            console.error("Error deleting soal:", error);
+            showAlert("Gagal menghapus soal: " + error.message, "error");
+          }
+        }
+      }
+
+      // Initialize authentication and admin interface
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Initialize Supabase first
+        supabase = await initializeSupabase();
+        
+        if (!supabase) {
+          console.error('Failed to initialize Supabase');
+          showLoginAlert('Gagal menginisialisasi database. Silakan refresh halaman.');
+          return;
+        }
+
+        // Check authentication status
+        const isAuthenticated = await checkAuthStatus();
+        
+        if (!isAuthenticated) {
+          showLoginForm();
+        } else {
+          initializeAdminInterface();
+        }
+
+        // Add login form event listener
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+          loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            handleLogin(email, password);
+          });
+        }
+
+        // Add logout button event listener
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) {
+          logoutButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogout();
+          });
+        }
+
+        // Add event listener for latihan tab changes
+        const latihanTabs = document.querySelectorAll("#latihanTabs .nav-link");
+        latihanTabs.forEach((tab) => {
+          tab.addEventListener("click", function (e) {
+            const target = this.getAttribute("href");
+            const category = target.replace("#", "").replace("-content", "");
+
+            // Load soal list for the selected category only if database is ready
+            setTimeout(() => {
+              if (db) {
+                loadSoalList(category);
+              }
+            }, 100);
+          });
+        });
+
+        // Load soal list for harian by default only if database is ready
+        setTimeout(() => {
+          if (db) {
+            loadSoalList("harian");
+          }
+        }, 100);
+      });
     </script>
+
+    <!-- Close wrapper and admin interface divs -->
+    </div>
+    </div>
   </body>
 </html>

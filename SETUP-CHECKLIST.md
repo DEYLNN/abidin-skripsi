@@ -54,6 +54,56 @@
 - [ ] Test edit materi
 - [ ] Test hapus materi
 
+## ✅ Form Input Soal - Status: BERFUNGSI
+
+### Fitur yang Sudah Berfungsi:
+
+- ✅ **Modal Form Soal** - Modal untuk menambah/edit soal
+- ✅ **Input Fields** - Semua field input tersedia:
+  - Pertanyaan (textarea)
+  - Tipe soal (pilihan ganda/essay)
+  - Pilihan jawaban A, B, C, D untuk pilihan ganda
+  - Jawaban benar untuk essay
+  - Penjelasan (opsional)
+- ✅ **Toggle Tipe Soal** - Form bisa beralih antara pilihan ganda dan essay
+- ✅ **Validasi Form** - Validasi untuk field yang required
+- ✅ **Database Integration** - Soal disimpan ke tabel `soal` di Supabase
+- ✅ **List Soal** - Menampilkan daftar soal yang sudah dibuat
+- ✅ **Edit Soal** - Fungsi untuk mengedit soal yang sudah ada
+- ✅ **Delete Soal** - Fungsi untuk menghapus soal
+- ✅ **Kategori Soal** - Support untuk latihan harian, mingguan, dan ujian
+
+### Database Structure:
+
+```sql
+CREATE TABLE soal (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    kategori VARCHAR(50) NOT NULL CHECK (kategori IN ('harian', 'mingguan', 'ujian')),
+    pertanyaan TEXT NOT NULL,
+    tipe_soal VARCHAR(20) NOT NULL CHECK (tipe_soal IN ('pilihan_ganda', 'essay')),
+    jawaban_benar TEXT NOT NULL,
+    pilihan_jawaban JSONB,
+    penjelasan TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+### Cara Menggunakan:
+
+1. Klik menu "Manajemen Latihan" di sidebar
+2. Pilih tab kategori (Harian/Mingguan/Ujian)
+3. Klik "Tambah Soal" untuk menambah soal baru
+4. Isi form sesuai tipe soal yang dipilih
+5. Klik "Simpan Soal" untuk menyimpan
+6. Soal akan muncul di list dan bisa diedit/dihapus
+
+### Troubleshooting:
+
+- Jika muncul error "Database belum diinisialisasi", refresh halaman
+- Pastikan tabel `soal` sudah dibuat di Supabase
+- Pastikan RLS policies sudah dikonfigurasi dengan benar
+
 ## 🔧 Troubleshooting
 
 ### Error: "Environment variables tidak ditemukan"

@@ -340,3 +340,39 @@ SELECT id, judul_latin, jumlah_hukum,
        CASE WHEN latihan_praktis IS NOT NULL THEN 'Ada' ELSE 'Tidak ada' END as latihan_praktis
 FROM materi 
 ORDER BY created_at; 
+
+-- Create soal table for latihan management
+CREATE TABLE IF NOT EXISTS soal (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    kategori VARCHAR(50) NOT NULL CHECK (kategori IN ('harian', 'mingguan', 'ujian')),
+    pertanyaan TEXT NOT NULL,
+    tipe_soal VARCHAR(20) NOT NULL CHECK (tipe_soal IN ('pilihan_ganda', 'essay')),
+    jawaban_benar TEXT NOT NULL,
+    pilihan_jawaban JSONB,
+    penjelasan TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create index for better performance
+CREATE INDEX IF NOT EXISTS idx_soal_kategori ON soal(kategori);
+CREATE INDEX IF NOT EXISTS idx_soal_created_at ON soal(created_at);
+
+-- Enable Row Level Security (RLS)
+ALTER TABLE soal ENABLE ROW LEVEL SECURITY;
+
+-- Create policy for authenticated users to read soal
+CREATE POLICY "Allow authenticated users to read soal" ON soal
+    FOR SELECT USING (auth.role() = 'authenticated');
+
+-- Create policy for authenticated users to insert soal
+CREATE POLICY "Allow authenticated users to insert soal" ON soal
+    FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+
+-- Create policy for authenticated users to update soal
+CREATE POLICY "Allow authenticated users to update soal" ON soal
+    FOR UPDATE USING (auth.role() = 'authenticated');
+
+-- Create policy for authenticated users to delete soal
+CREATE POLICY "Allow authenticated users to delete soal" ON soal
+    FOR DELETE USING (auth.role() = 'authenticated'); 

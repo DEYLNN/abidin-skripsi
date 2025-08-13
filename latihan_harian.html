@@ -9,6 +9,10 @@
       href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lateef&display=swap"
       rel="stylesheet"
     />
+    <!-- Load environment and Supabase -->
+    <script src="env.js"></script>
+    <script src="supabase-offline.js"></script>
+    <script src="soal-service.js"></script>
     <style>
       :root {
         --primary: #2e7d32;
@@ -142,6 +146,67 @@
         font-weight: 700;
         font-size: 1.25em;
       }
+
+      /* Answer Styles */
+      .answer-section {
+        margin-top: 20px;
+        padding: 15px;
+        background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+        border-radius: 12px;
+        border-left: 4px solid var(--primary);
+      }
+      .answer-label {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 0.9em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
+      .answer-content {
+        font-size: 1.1em;
+        color: #2c5530;
+        font-weight: 600;
+      }
+      .answer-content.essay {
+        font-style: italic;
+        background: #fff;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #d4edda;
+      }
+      .answer-content.multiple-choice {
+        background: #fff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 2px solid var(--primary);
+        display: inline-block;
+        font-weight: 700;
+      }
+
+      /* Options Container */
+      .options-container {
+        margin-top: 15px;
+      }
+      .option-item {
+        margin: 8px 0;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+      }
+      .option-item.correct {
+        background: #d4edda;
+        border-color: var(--primary);
+        color: #155724;
+      }
+      .option-item.incorrect {
+        background: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+      }
+
       footer {
         background-color: var(--primary);
         color: var(--light);
@@ -198,46 +263,115 @@
     <!-- Konten -->
     <div class="container">
       <h2>!أجب هٰذه الْأسْئلةاْلآتية</h2>
-      <div class="latihan-card-list">
-        <div class="latihan-card">
-          <div class="card-num">1</div>
-          <div style="text-align: right" class="arabic-text question-title">
-            مَا هُوَ عِلْمُ التَّجْوِيْدِ؟
-          </div>
-          <span class="verse arabic-text">........... </span>
-        </div>
-        <div class="latihan-card">
-          <div class="card-num">2</div>
-          <div style="text-align: right" class="question-title">
-            مَا فَائِدَتُهُ؟
-          </div>
-          <span class="verse arabic-text">............ </span>
-        </div>
-        <div class="latihan-card">
-          <div class="card-num">3</div>
-          <div style="text-align: right" class="question-title">
-            مَا حُكْمُ اسْتِعْمَالِهِ؟
-          </div>
-          <span class="verse arabic-text">............ </span>
-        </div>
-        <div class="latihan-card">
-          <div class="card-num">4</div>
-          <div style="text-align: right" class="question-title">
-            كَمْ حُكْمًا لِلنُّوْنِ السَّاكِنَةِ وَالتَّنْوِيْنِ؟
-          </div>
-          <span class="verse arabic-text">...............</span>
-        </div>
-        <div class="latihan-card">
-          <div class="card-num">5</div>
-          <div style="text-align: right" class="question-title">
-            !اُذْكُرْ لِلنُّوْنِ السَّاكِنَةِ وَالتَّنْوِيْنِ
-          </div>
-          <span class="verse arabic-text">...............</span>
+      <div class="latihan-card-list" id="soal-container">
+        <!-- Soal akan dimuat dari database -->
+        <div style="text-align: center; padding: 2rem; color: #666">
+          <p>Memuat soal...</p>
         </div>
       </div>
     </div>
     <footer>
       <p>&copy; 2025 SohibTajwid - Media Pembelajaran Ilmu Tajwid</p>
     </footer>
+
+    <script>
+      // Override the createSoalCard method to show answers
+      const originalCreateSoalCard = window.soalService.createSoalCard;
+
+      window.soalService.createSoalCard = function (soal, number) {
+        const card = document.createElement("div");
+        card.className = "latihan-card";
+
+        let cardContent = `
+          <div class="card-num">${number}</div>
+          <div style="text-align: right" class="question-title">
+            ${soal.pertanyaan}
+          </div>
+        `;
+
+        // Add verse if exists in pertanyaan (for Arabic text)
+        if (soal.pertanyaan.includes('"') || soal.pertanyaan.includes('"')) {
+          const verseMatch = soal.pertanyaan.match(/"([^"]+)"/);
+          if (verseMatch) {
+            cardContent += `
+              <div style="
+                text-align: right;
+                font-family: 'Traditional Arabic', Arial, sans-serif;
+                font-size: 24px;
+                margin: 10px 0;
+              " class="question-title">
+                "${verseMatch[1]}"
+              </div>
+            `;
+          }
+        }
+
+        // Add answer section
+        cardContent += `
+          <div class="answer-section">
+            <div class="answer-label">Jawaban:</div>
+        `;
+
+        if (soal.tipe_soal === "pilihan_ganda") {
+          // Show multiple choice options with correct answer highlighted
+          cardContent += this.createMultipleChoiceOptionsWithAnswer(soal);
+        } else {
+          // Show essay answer
+          cardContent += `
+            <div class="answer-content essay">${
+              soal.jawaban_benar || "Jawaban tidak tersedia"
+            }</div>
+          `;
+        }
+
+        cardContent += `</div>`;
+        card.innerHTML = cardContent;
+        return card;
+      };
+
+      // Create multiple choice options with correct answer highlighted
+      window.soalService.createMultipleChoiceOptionsWithAnswer = function (
+        soal
+      ) {
+        if (!soal.pilihan_jawaban || typeof soal.pilihan_jawaban !== "object") {
+          return `<div class="answer-content essay">Jawaban tidak tersedia</div>`;
+        }
+
+        let optionsHtml = '<div class="options-container">';
+        const options = Object.entries(soal.pilihan_jawaban);
+
+        options.forEach(([optionLetter, optionText]) => {
+          const isCorrect = optionLetter === soal.jawaban_benar;
+          const optionClass = isCorrect
+            ? "option-item correct"
+            : "option-item incorrect";
+
+          optionsHtml += `
+            <div class="${optionClass}">
+              <span style="font-weight: bold; margin-right: 8px;">${optionLetter}.</span>
+              <span>${optionText}</span>
+              ${
+                isCorrect
+                  ? '<span style="margin-left: 8px; color: #155724;">✓ Benar</span>'
+                  : ""
+              }
+            </div>
+          `;
+        });
+        optionsHtml += "</div>";
+
+        return optionsHtml;
+      };
+
+      // Load soal when page is ready
+      document.addEventListener("DOMContentLoaded", function () {
+        // Load soal harian from database
+        if (window.loadSoal) {
+          window.loadSoal("harian", "soal-container");
+        } else {
+          console.error("loadSoal function not available");
+        }
+      });
+    </script>
   </body>
 </html>
