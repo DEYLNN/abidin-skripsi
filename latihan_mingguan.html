@@ -162,26 +162,29 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
-      .answer-content {
-        font-size: 1.1em;
-        color: #2c5530;
-        font-weight: 600;
+
+      .show-answer-btn {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-weight: 500;
       }
-      .answer-content.essay {
-        font-style: italic;
-        background: #fff;
-        padding: 10px 12px;
-        border-radius: 6px;
-        border: 1px solid #d4edda;
-      }
-      .answer-content.multiple-choice {
-        background: #fff;
-        padding: 8px 12px;
-        border-radius: 6px;
-        border: 2px solid var(--primary);
-        display: inline-block;
-        font-weight: 700;
+      .show-answer-btn:hover {
+        background: #1b5e20;
+        transform: scale(1.02);
       }
 
       /* Options Container */
@@ -275,7 +278,7 @@
     </footer>
 
     <script>
-      // Override the createSoalCard method to show answers
+      // Override the createSoalCard method to show/hide answers only for admin
       const originalCreateSoalCard = window.soalService.createSoalCard;
 
       window.soalService.createSoalCard = function (soal, number) {
@@ -306,22 +309,38 @@
           }
         }
 
+        // Check if user is logged in (admin)
+        const isLoggedIn = this.checkUserLogin();
+        const showAnswerBtn = isLoggedIn
+          ? '<button class="show-answer-btn" onclick="toggleAnswer(this, ' +
+            number +
+            ')">Tampilkan Jawaban</button>'
+          : "";
+
         // Add answer section
         cardContent += `
           <div class="answer-section">
-            <div class="answer-label">Jawaban:</div>
+            <div class="answer-label">
+              <span>Jawaban:</span>
+              ${showAnswerBtn}
+            </div>
         `;
 
         if (soal.tipe_soal === "pilihan_ganda") {
-          // Show multiple choice options with correct answer highlighted
-          cardContent += this.createMultipleChoiceOptionsWithAnswer(soal);
+          // Show multiple choice options with correct answer highlighted (hidden by default)
+          cardContent += this.createMultipleChoiceOptionsWithAnswer(
+            soal,
+            false // Always start hidden
+          );
         } else {
-          // Show essay answer
+          // Show essay answer (hidden by default)
           cardContent += `
-            <div class="answer-content essay">${
-              soal.jawaban_benar || "Jawaban tidak tersedia"
-            }</div>
-          `;
+             <div style="font-family: 'Traditional Arabic', Arial, sans-serif; font-size: 20px;" class="answer-content essay answer-hidden" data-answer="${
+               soal.jawaban_benar || "Jawaban tidak tersedia"
+             }">
+               ..............
+             </div>
+           `;
         }
 
         cardContent += `</div>`;
@@ -329,29 +348,39 @@
         return card;
       };
 
-      // Create multiple choice options with correct answer highlighted
+      // Create multiple choice options with correct answer highlighted (hidden by default)
       window.soalService.createMultipleChoiceOptionsWithAnswer = function (
-        soal
+        soal,
+        isLoggedIn = false
       ) {
         if (!soal.pilihan_jawaban || typeof soal.pilihan_jawaban !== "object") {
-          return `<div class="answer-content essay">Jawaban tidak tersedia</div>`;
+          return `<div class="answer-content essay answer-hidden" data-answer="Jawaban tidak tersedia">
+            ${isLoggedIn ? "Jawaban tidak tersedia" : ".............."}
+          </div>`;
         }
 
-        let optionsHtml = '<div class="options-container">';
+        let optionsHtml =
+          '<div class="options-container" data-correct-answer="' +
+          soal.jawaban_benar +
+          '">';
         const options = Object.entries(soal.pilihan_jawaban);
 
         options.forEach(([optionLetter, optionText]) => {
           const isCorrect = optionLetter === soal.jawaban_benar;
           const optionClass = isCorrect
-            ? "option-item correct"
-            : "option-item incorrect";
+            ? isLoggedIn
+              ? "option-item correct"
+              : "option-item"
+            : isLoggedIn
+            ? "option-item incorrect"
+            : "option-item";
 
           optionsHtml += `
-            <div class="${optionClass}">
+            <div class="${optionClass}" data-correct="${isCorrect}" data-letter="${optionLetter}">
               <span style="font-weight: bold; margin-right: 8px;">${optionLetter}.</span>
               <span>${optionText}</span>
               ${
-                isCorrect
+                isCorrect && isLoggedIn
                   ? '<span style="margin-left: 8px; color: #155724;">✓ Benar</span>'
                   : ""
               }
@@ -361,6 +390,93 @@
         optionsHtml += "</div>";
 
         return optionsHtml;
+      };
+
+      // Check if user is logged in (admin)
+      window.soalService.checkUserLogin = function () {
+        try {
+          // Check for admin session
+          const adminSession = localStorage.getItem("adminSession");
+          if (adminSession) {
+            const sessionData = JSON.parse(adminSession);
+            if (sessionData.access_token) {
+              return true;
+            }
+          }
+
+          // Check for Supabase session
+          const supabaseSession = localStorage.getItem(
+            "sb-jybgnujxmttmbzjvmuuw-auth-token"
+          );
+          if (supabaseSession) {
+            const sessionData = JSON.parse(supabaseSession);
+            if (sessionData.access_token) {
+              return true;
+            }
+          }
+
+          return false;
+        } catch (error) {
+          console.error("Error checking user login:", error);
+          return false;
+        }
+      };
+
+      // Toggle answer visibility
+      window.toggleAnswer = function (button, questionNumber) {
+        const answerSection = button.closest(".answer-section");
+        const answerContent = answerSection.querySelector(".answer-content");
+        const optionsContainer =
+          answerSection.querySelector(".options-container");
+
+        if (answerContent) {
+          // For essay questions
+          if (answerContent.classList.contains("answer-hidden")) {
+            const realAnswer = answerContent.getAttribute("data-answer");
+            answerContent.textContent = realAnswer;
+            answerContent.classList.remove("answer-hidden");
+            button.textContent = "Sembunyikan Jawaban";
+          } else {
+            answerContent.textContent = "..............";
+            answerContent.classList.add("answer-hidden");
+            button.textContent = "Tampilkan Jawaban";
+          }
+        }
+
+        if (optionsContainer) {
+          // For multiple choice questions
+          const options = optionsContainer.querySelectorAll(".option-item");
+          const isHidden =
+            options[0] &&
+            !options[0].classList.contains("correct") &&
+            !options[0].classList.contains("incorrect");
+
+          options.forEach((option) => {
+            const isCorrect = option.getAttribute("data-correct") === "true";
+
+            if (isHidden) {
+              // Show answers
+              if (isCorrect) {
+                option.classList.add("correct");
+                if (!option.querySelector(".correct-mark")) {
+                  option.innerHTML +=
+                    '<span class="correct-mark" style="margin-left: 8px; color: #155724;">✓ Benar</span>';
+                }
+              } else {
+                option.classList.add("incorrect");
+              }
+              button.textContent = "Sembunyikan Jawaban";
+            } else {
+              // Hide answers
+              option.classList.remove("correct", "incorrect");
+              const correctMark = option.querySelector(".correct-mark");
+              if (correctMark) {
+                correctMark.remove();
+              }
+              button.textContent = "Tampilkan Jawaban";
+            }
+          });
+        }
       };
 
       // Load soal when page is ready
